@@ -9,11 +9,11 @@ import vuePlugin from '@vitejs/plugin-vue'
 // @see https://cn.vitejs.dev/config/
 export default ({
   command,
-  mode
+  mode,
 }) => {
   const NODE_ENV = process.env.NODE_ENV || 'development'
   const envFiles = [
-    `.env.${NODE_ENV}`
+    `.env.${NODE_ENV}`,
   ]
   for (const file of envFiles) {
     const envConfig = dotenv.parse(fs.readFileSync(file))
@@ -30,8 +30,8 @@ export default ({
     output: {
       entryFileNames: `gva/gin-vue-admin-[name].${timestamp}.js`,
       chunkFileNames: `js/gin-vue-admin-[name].${timestamp}.js`,
-      assetFileNames: `assets/gin-vue-admin-[name].${timestamp}.[ext]`
-    }
+      assetFileNames: `assets/gin-vue-admin-[name].${timestamp}.[ext]`,
+    },
   }
 
   const optimizeDeps = {}
@@ -50,11 +50,11 @@ export default ({
       alias,
     },
     define: {
-      'process.env': {}
+      'process.env': {},
     },
     server: {
       // 如果使用docker-compose开发模式，设置为false
-      open: true,
+      open: false,
       port: process.env.VITE_CLI_PORT,
       proxy: {
         // 把key的路径代理到target位置
@@ -63,7 +63,7 @@ export default ({
           target: `${process.env.VITE_BASE_PATH}:${process.env.VITE_SERVER_PORT}/`, // 代理到 目标路径
           changeOrigin: true,
           rewrite: path => path.replace(new RegExp('^' + process.env.VITE_BASE_API), ''),
-        }
+        },
       },
     },
     build: {
@@ -79,15 +79,15 @@ export default ({
     plugins: [
       legacyPlugin({
         targets: ['Android > 39', 'Chrome >= 60', 'Safari >= 10.1', 'iOS >= 10.3', 'Firefox >= 54', 'Edge >= 15'],
-      }), vuePlugin(), [Banner(`\n Build based on gin-vue-admin \n Time : ${timestamp}`)]
+      }), vuePlugin(), [Banner(`\n Build based on gin-vue-admin \n Time : ${timestamp}`)],
     ],
     css: {
       preprocessorOptions: {
         less: {
           // 支持内联 JavaScript
           javascriptEnabled: true,
-        }
-      }
+        },
+      },
     },
   }
 }

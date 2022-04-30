@@ -1,9 +1,9 @@
 <template>
   <div>
-    <warning-bar title="注：右上角头像下拉可切换角色" />
+<!--    <warning-bar title="注：右上角头像下拉可切换角色" />-->
     <div class="gva-table-box">
       <div class="gva-btn-list">
-        <el-button size="small" type="primary" icon="plus" @click="addUser">新增用户</el-button>
+        <el-button size="small" type="primary" icon="plus" @click="addUser">新增商户</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -19,20 +19,20 @@
         <el-table-column align="left" label="昵称" min-width="150" prop="nickName" />
         <el-table-column align="left" label="手机号" min-width="180" prop="phone" />
         <el-table-column align="left" label="邮箱" min-width="180" prop="email" />
-        <el-table-column align="left" label="用户角色" min-width="200">
-          <template #default="scope">
-            <el-cascader
-              v-model="scope.row.authorityIds"
-              :options="authOptions"
-              :show-all-levels="false"
-              collapse-tags
-              :props="{ multiple:true,checkStrictly: true,label:'authorityName',value:'authorityId',disabled:'disabled',emitPath:false}"
-              :clearable="false"
-              @visible-change="(flag)=>{changeAuthority(scope.row,flag)}"
-              @remove-tag="()=>{changeAuthority(scope.row,false)}"
-            />
-          </template>
-        </el-table-column>
+<!--        <el-table-column align="left" label="用户角色" min-width="200">-->
+<!--          <template #default="scope">-->
+<!--            <el-cascader-->
+<!--              v-model="scope.row.authorityIds"-->
+<!--              :options="authOptions"-->
+<!--              :show-all-levels="false"-->
+<!--              collapse-tags-->
+<!--              :props="{ multiple:true,checkStrictly: true,label:'authorityName',value:'authorityId',disabled:'disabled',emitPath:false}"-->
+<!--              :clearable="false"-->
+<!--              @visible-change="(flag)=>{changeAuthority(scope.row,flag)}"-->
+<!--              @remove-tag="()=>{changeAuthority(scope.row,false)}"-->
+<!--            />-->
+<!--          </template>-->
+<!--        </el-table-column>-->
 
         <el-table-column label="操作" min-width="250" fixed="right">
           <template #default="scope">
@@ -67,7 +67,7 @@
     <el-dialog
       v-model="addUserDialog"
       custom-class="user-dialog"
-      title="用户"
+      title="商户"
       :show-close="false"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
@@ -89,16 +89,16 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="userInfo.email" />
           </el-form-item>
-          <el-form-item label="用户角色" prop="authorityId">
-            <el-cascader
-              v-model="userInfo.authorityIds"
-              style="width:100%"
-              :options="authOptions"
-              :show-all-levels="false"
-              :props="{ multiple:true,checkStrictly: true,label:'authorityName',value:'authorityId',disabled:'disabled',emitPath:false}"
-              :clearable="false"
-            />
-          </el-form-item>
+<!--          <el-form-item label="用户角色" prop="authorityId">-->
+<!--            <el-cascader-->
+<!--              v-model="userInfo.authorityIds"-->
+<!--              style="width:100%"-->
+<!--              :options="authOptions"-->
+<!--              :show-all-levels="false"-->
+<!--              :props="{ multiple:true,checkStrictly: true,label:'authorityName',value:'authorityId',disabled:'disabled',emitPath:false}"-->
+<!--              :clearable="false"-->
+<!--            />-->
+<!--          </el-form-item>-->
           <el-form-item label="头像" label-width="80px">
             <div style="display:inline-block" @click="openHeaderChange">
               <img v-if="userInfo.headerImg" class="header-img-box" :src="(userInfo.headerImg && userInfo.headerImg.slice(0, 4) !== 'http')?path+userInfo.headerImg:userInfo.headerImg">
@@ -123,15 +123,14 @@
 
 <script>
 export default {
-  name: 'User',
+  name: 'Merchant',
 }
 </script>
 
 <script setup>
 
 import {
-  getUserList,
-  setUserAuthorities,
+  getMerchantList,
   register,
   deleteUser
 } from '@/api/user'
@@ -139,10 +138,9 @@ import {
 import { getAuthorityList } from '@/api/authority'
 import CustomPic from '@/components/customPic/index.vue'
 import ChooseImg from '@/components/chooseImg/index.vue'
-import warningBar from '@/components/warningBar/warningBar.vue'
 import { setUserInfo, resetPassword } from '@/api/user.js'
 
-import { nextTick, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 const path = ref(import.meta.env.VITE_BASE_API)
 // 初始化相关
@@ -184,7 +182,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getUserList({ page: page.value, pageSize: pageSize.value })
+  const table = await getMerchantList({ page: page.value, pageSize: pageSize.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -266,8 +264,8 @@ const userInfo = ref({
   password: '',
   nickName: '',
   headerImg: '',
-  authorityId: '',
-  authorityIds: [],
+  authorityId: '13',
+  authorityIds: ['13'],
 })
 
 const rules = ref({
@@ -288,7 +286,8 @@ const rules = ref({
 })
 const userForm = ref(null)
 const enterAddUserDialog = async() => {
-  userInfo.value.authorityId = userInfo.value.authorityIds[0]
+  userInfo.value.authorityId = '13'
+  userInfo.value.authorityIds = ['13']
   userForm.value.validate(async valid => {
     if (valid) {
       const req = {
@@ -330,26 +329,30 @@ const dialogFlag = ref('add')
 
 const addUser = () => {
   dialogFlag.value = 'add'
+  userInfo.value.authorityId = '13'
+  userInfo.value.authorityIds = ['13']
   addUserDialog.value = true
 }
-const changeAuthority = async(row, flag) => {
-  if (flag) {
-    return
-  }
-
-  await nextTick()
-  const res = await setUserAuthorities({
-    ID: row.ID,
-    authorityIds: row.authorityIds
-  })
-  if (res.code === 0) {
-    ElMessage({ type: 'success', message: '角色设置成功' })
-  }
-}
+// const changeAuthority = async(row, flag) => {
+//   if (flag) {
+//     return
+//   }
+//
+//   await nextTick()
+//   const res = await setUserAuthorities({
+//     ID: row.ID,
+//     authorityIds: row.authorityIds
+//   })
+//   if (res.code === 0) {
+//     ElMessage({ type: 'success', message: '角色设置成功' })
+//   }
+// }
 
 const openEdit = (row) => {
   dialogFlag.value = 'edit'
   userInfo.value = JSON.parse(JSON.stringify(row))
+  userInfo.value.authorityId = '13'
+  userInfo.value.authorityIds = ['13']
   addUserDialog.value = true
 }
 

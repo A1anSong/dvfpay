@@ -95,7 +95,7 @@ const handleReload = () => {
   }, 500)
 }
 const toService = () => {
-  window.open('https://support.qq.com/product/371961')
+  window.open('https://www.google.com')
 }
 
 </script>

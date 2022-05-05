@@ -48,7 +48,12 @@
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="名称" prop="name" width="120" />
+        <el-table-column align="left" label="类型" prop="type" width="120" />
         <el-table-column align="left" label="参数" prop="parameter" width="120" />
+        <el-table-column align="left" label="状态" prop="status" width="120" />
+        <el-table-column align="left" label="最大限额" prop="limitMax" width="120" />
+        <el-table-column align="left" label="最小限额" prop="limitMin" width="120" />
+        <el-table-column align="left" label="手续费" prop="fee" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -80,8 +85,23 @@
         <el-form-item label="名称:">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="类型:">
+          <el-input v-model="formData.type" clearable placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="参数:">
           <el-input v-model="formData.parameter" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="状态:">
+          <el-input v-model="formData.status" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="最大限额:">
+          <el-input v-model="formData.limitMax" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="最小限额:">
+          <el-input v-model="formData.limitMin" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="手续费:">
+          <el-input v-model="formData.fee" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -118,7 +138,12 @@ import { ref } from 'vue'
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
   name: '',
+  type: '',
   parameter: '',
+  status: '',
+  limitMax: '',
+  limitMin: '',
+  fee: '',
 })
 
 // =========== 表格控制部分 ===========

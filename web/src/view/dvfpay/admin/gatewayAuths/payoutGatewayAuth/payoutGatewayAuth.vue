@@ -2,11 +2,11 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="名称">
-          <el-input v-model="searchInfo.name" placeholder="搜索条件" />
+        <el-form-item label="代收通道id">
+          <el-input v-model="searchInfo.payoutGatewayId" placeholder="搜索条件" />
         </el-form-item>
-        <el-form-item label="参数">
-          <el-input v-model="searchInfo.parameter" placeholder="搜索条件" />
+        <el-form-item label="商户id">
+          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
@@ -47,13 +47,13 @@
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="名称" prop="name" width="120" />
-        <el-table-column align="left" label="类型" prop="type" width="120" />
-        <el-table-column align="left" label="参数" prop="parameter" width="120" />
-        <el-table-column align="left" label="状态" prop="status" width="120" />
-        <el-table-column align="left" label="最大限额" prop="limitMax" width="120" />
-        <el-table-column align="left" label="最小限额" prop="limitMin" width="120" />
+        <el-table-column align="left" label="代收通道id" prop="payoutGatewayId" width="120" />
+        <el-table-column align="left" label="商户id" prop="merchantId" width="120" />
         <el-table-column align="left" label="手续费" prop="fee" width="120" />
+        <el-table-column align="left" label="单笔最高" prop="limitMax" width="120" />
+        <el-table-column align="left" label="单笔最低" prop="limitMin" width="120" />
+        <el-table-column align="left" label="单日限制" prop="limitDay" width="120" />
+        <el-table-column align="left" label="总量限制" prop="limitTotal" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -61,7 +61,7 @@
               icon="edit"
               size="small"
               class="table-button"
-              @click="updatePayoutGatewayFunc(scope.row)"
+              @click="updatePayoutGatewayAuthFunc(scope.row)"
             >变更
             </el-button>
             <el-button type="text" icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
@@ -82,26 +82,26 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" label-width="80px">
-        <el-form-item label="名称:">
-          <el-input v-model="formData.name" clearable placeholder="请输入" />
+        <el-form-item label="代收通道id:">
+          <el-input v-model.number="formData.payoutGatewayId" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="类型:">
-          <el-input v-model="formData.type" clearable placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="参数:">
-          <el-input v-model="formData.parameter" clearable placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="状态:">
-          <el-input v-model="formData.status" clearable placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="最大限额:">
-          <el-input v-model="formData.limitMax" clearable placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="最小限额:">
-          <el-input v-model="formData.limitMin" clearable placeholder="请输入" />
+        <el-form-item label="商户id:">
+          <el-input v-model.number="formData.merchantId" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="手续费:">
-          <el-input v-model="formData.fee" clearable placeholder="请输入" />
+          <el-input v-model.number="formData.fee" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="单笔最高:">
+          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="单笔最低:">
+          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="单日限制:">
+          <el-input v-model.number="formData.limitDay" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="总量限制:">
+          <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -116,19 +116,19 @@
 
 <script>
 export default {
-  name: 'PayoutGateway',
+  name: 'PayoutGatewayAuth',
 }
 </script>
 
 <script setup>
 import {
-  createPayoutGateway,
-  deletePayoutGateway,
-  deletePayoutGatewayByIds,
-  updatePayoutGateway,
-  findPayoutGateway,
-  getPayoutGatewayList,
-} from '@/api/dvfpay/payoutGateway'
+  createPayoutGatewayAuth,
+  deletePayoutGatewayAuth,
+  deletePayoutGatewayAuthByIds,
+  updatePayoutGatewayAuth,
+  findPayoutGatewayAuth,
+  getPayoutGatewayAuthList,
+} from '@/api/dvfpay/payoutGatewayAuth'
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
@@ -137,13 +137,13 @@ import { ref } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
-  name: '',
-  type: '',
-  parameter: '',
-  status: '',
-  limitMax: '',
-  limitMin: '',
-  fee: '',
+  payoutGatewayId: 0,
+  merchantId: 0,
+  fee: 0,
+  limitMax: 0,
+  limitMin: 0,
+  limitDay: 0,
+  limitTotal: 0,
 })
 
 // =========== 表格控制部分 ===========
@@ -179,7 +179,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getPayoutGatewayList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getPayoutGatewayAuthList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -213,7 +213,7 @@ const deleteRow = (row) => {
     cancelButtonText: '取消',
     type: 'warning',
   }).then(() => {
-    deletePayoutGatewayFunc(row)
+    deletePayoutGatewayAuthFunc(row)
   })
 }
 
@@ -234,7 +234,7 @@ const onDelete = async() => {
   multipleSelection.value.map(item => {
     ids.push(item.ID)
   })
-  const res = await deletePayoutGatewayByIds({ ids })
+  const res = await deletePayoutGatewayAuthByIds({ ids })
   if (res.code === 0) {
     ElMessage({
       type: 'success',
@@ -252,18 +252,18 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updatePayoutGatewayFunc = async(row) => {
-  const res = await findPayoutGateway({ ID: row.ID })
+const updatePayoutGatewayAuthFunc = async(row) => {
+  const res = await findPayoutGatewayAuth({ ID: row.ID })
   type.value = 'update'
   if (res.code === 0) {
-    formData.value = res.data.repayoutGateway
+    formData.value = res.data.repayoutGatewayAuth
     dialogFormVisible.value = true
   }
 }
 
 // 删除行
-const deletePayoutGatewayFunc = async(row) => {
-  const res = await deletePayoutGateway({ ID: row.ID })
+const deletePayoutGatewayAuthFunc = async(row) => {
+  const res = await deletePayoutGatewayAuth({ ID: row.ID })
   if (res.code === 0) {
     ElMessage({
       type: 'success',
@@ -289,8 +289,13 @@ const openDialog = () => {
 const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
-    name: '',
-    parameter: '',
+    payoutGatewayId: 0,
+    merchantId: 0,
+    fee: 0,
+    limitMax: 0,
+    limitMin: 0,
+    limitDay: 0,
+    limitTotal: 0,
   }
 }
 // 弹窗确定
@@ -298,13 +303,13 @@ const enterDialog = async() => {
   let res
   switch (type.value) {
     case 'create':
-      res = await createPayoutGateway(formData.value)
+      res = await createPayoutGatewayAuth(formData.value)
       break
     case 'update':
-      res = await updatePayoutGateway(formData.value)
+      res = await updatePayoutGatewayAuth(formData.value)
       break
     default:
-      res = await createPayoutGateway(formData.value)
+      res = await createPayoutGatewayAuth(formData.value)
       break
   }
   if (res.code === 0) {

@@ -17,8 +17,8 @@ type PayoutOrder struct {
 	Status      string     `json:"status" form:"status" gorm:"column:status;comment:;"`
 	Payer       string     `json:"payer" form:"payer" gorm:"column:payer;comment:;"`
 	Remark      string     `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
-	MerchantId  int        `json:"merchantId" form:"merchantId" gorm:"column:merchantId;comment:;"`
-	GatewayId   uint       `json:"gatewayId" form:"gatewayId" gorm:"column:gatewayId;comment:;"`
+	MerchantId  int        `json:"merchantId" form:"merchantId" gorm:"column:merchant_id;comment:;"`
+	GatewayId   uint       `json:"gatewayId" form:"gatewayId" gorm:"column:gateway_id;comment:;"`
 }
 
 // TableName PayoutOrder 表名

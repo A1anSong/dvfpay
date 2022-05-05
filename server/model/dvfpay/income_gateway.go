@@ -10,10 +10,11 @@ import (
 type IncomeGateway struct {
 	global.GVA_MODEL
 	Name      string `json:"name" form:"name" gorm:"column:name;comment:;"`
+	Type      string `json:"type" form:"type" gorm:"column:type;comment:;"`
 	Parameter string `json:"parameter" form:"parameter" gorm:"column:parameter;comment:;"`
 	Status    string `json:"status" form:"status" gorm:"column:status;comment:;"`
-	LimitMax  *int   `json:"limitMax" form:"limitMax" gorm:"column:limitMax;comment:;"`
-	LimitMin  *int   `json:"limitMin" form:"limitMin" gorm:"column:limitMin;comment:;"`
+	LimitMax  *int   `json:"limitMax" form:"limitMax" gorm:"column:limit_max;comment:;"`
+	LimitMin  *int   `json:"limitMin" form:"limitMin" gorm:"column:limit_min;comment:;"`
 	Fee       *int   `json:"fee" form:"fee" gorm:"column:fee;comment:;"`
 }
 

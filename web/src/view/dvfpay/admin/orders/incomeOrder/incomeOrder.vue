@@ -137,7 +137,7 @@ import { ref } from 'vue'
 const formData = ref({
   arrivalTime: new Date(),
   orderId: '',
-  amount: 0,
+  amount: '',
   currency: '',
   status: '',
   payer: '',

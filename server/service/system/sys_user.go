@@ -228,7 +228,7 @@ func (userService *UserService) ResetPassword(ID uint) (err error) {
 }
 
 //@author: [piexlmax](https://github.com/piexlmax)
-//@function: GetUserInfoList
+//@function: GetMerchantInfoList
 //@description: 分页获取数据
 //@param: info request.PageInfo
 //@return: err error, list interface{}, total int64
@@ -245,4 +245,21 @@ func (userService *UserService) GetMerchantInfoList(info request.PageInfo) (err 
 	}
 	err = db.Limit(limit).Offset(offset).Preload("Authorities").Preload("Authority").Find(&userList).Error
 	return err, userList, total
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: GetMerchantInfoList
+//@description: 分页获取数据
+//@param: info request.PageInfo
+//@return: err error, list interface{}, total int64
+
+func (userService *UserService) GetMerchantList() (err error, list interface{}) {
+	type MerchantList struct {
+		ID       uint
+		NickName string `json:"nickName" gorm:"default:系统用户;comment:用户昵称"`
+	}
+	db := global.GVA_DB.Session(&gorm.Session{})
+	var merchantList []MerchantList
+	err = db.Table("sys_users").Where("deleted_at is null and authority_id = ?", "13").Select("id", "nick_name").Find(&merchantList).Error
+	return err, merchantList
 }

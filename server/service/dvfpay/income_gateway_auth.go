@@ -41,7 +41,7 @@ func (incomeGatewayAuthService *IncomeGatewayAuthService) UpdateIncomeGatewayAut
 // GetIncomeGatewayAuth 根据id获取IncomeGatewayAuth记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (incomeGatewayAuthService *IncomeGatewayAuthService) GetIncomeGatewayAuth(id uint) (err error, incomeGatewayAuth dvfpay.IncomeGatewayAuth) {
-	err = global.GVA_DB.Where("id = ?", id).First(&incomeGatewayAuth).Error
+	err = global.GVA_DB.Where("id = ?", id).Preload("IncomeGateway").Preload("Merchants").First(&incomeGatewayAuth).Error
 	return
 }
 
@@ -57,13 +57,10 @@ func (incomeGatewayAuthService *IncomeGatewayAuthService) GetIncomeGatewayAuthIn
 	if info.IncomeGatewayId != nil {
 		db = db.Where("income_gateway_id = ?", info.IncomeGatewayId)
 	}
-	if info.MerchantId != nil {
-		db = db.Where("merchant_id = ?", info.MerchantId)
-	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&incomeGatewayAuths).Error
+	err = db.Limit(limit).Offset(offset).Preload("IncomeGateway").Preload("Merchants").Find(&incomeGatewayAuths).Error
 	return err, incomeGatewayAuths, total
 }

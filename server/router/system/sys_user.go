@@ -27,6 +27,7 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 		userRouterWithoutRecord.GET("getUserInfo", baseApi.GetUserInfo)  // 获取自身信息
 
 		//dvfpay添加
-		userRouterWithoutRecord.POST("getMerchantList", baseApi.GetMerchantList) // 分页获取商户列表
+		userRouterWithoutRecord.POST("getMerchantInfoList", baseApi.GetMerchantInfoList) // 分页获取商户列表
+		userRouterWithoutRecord.GET("getMerchantList", baseApi.GetMerchantList)          // 获取商户列表
 	}
 }

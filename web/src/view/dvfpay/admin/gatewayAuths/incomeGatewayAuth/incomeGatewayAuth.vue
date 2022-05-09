@@ -47,8 +47,17 @@
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="代收通道id" prop="incomeGatewayId" width="120"/>
-        <el-table-column align="left" label="商户id" prop="merchantId" width="120"/>
+        <el-table-column align="left" label="代收通道" prop="incomeGateway.name" width="120"/>
+        <el-table-column align="left" label="商户" min-width="200">
+          <template #default="scope">
+            <el-cascader
+                v-model="scope.row.merchantIds"
+                :options="merchantOptions"
+                collapse-tags
+                :props="{ multiple:true,label:'nickName',value:'ID' }"
+            />
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="手续费" prop="fee" width="120"/>
         <el-table-column align="left" label="单笔最高" prop="limitMax" width="120"/>
         <el-table-column align="left" label="单笔最低" prop="limitMin" width="120"/>
@@ -82,11 +91,23 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" label-width="80px">
-        <el-form-item label="代收通道id:">
-          <el-input v-model.number="formData.incomeGatewayId" clearable placeholder="请输入"/>
+        <el-form-item label="代收通道:">
+          <el-cascader
+              v-model="formData.incomeGatewayId"
+              style="width:100%"
+              :options="incomeGatewayOptions"
+              :props="{ label:'name',value:'ID' }"
+              filterable
+          />
         </el-form-item>
-        <el-form-item label="商户id:">
-          <el-input v-model.number="formData.merchantId" clearable placeholder="请输入"/>
+        <el-form-item label="授权商户:">
+          <el-cascader
+              v-model="formData.merchants"
+              style="width:100%"
+              :options="merchantOptions"
+              :props="{ multiple:true,label:'nickName',value:'ID' }"
+              filterable
+          />
         </el-form-item>
         <el-form-item label="手续费:">
           <el-input v-model.number="formData.fee" clearable placeholder="请输入"/>
@@ -133,17 +154,19 @@ import {
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { getIncomeGatewayList } from '@/api/dvfpay/incomeGateway'
+import { getMerchantList } from '@/api/user'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
-  incomeGatewayId: 0,
-  merchantId: 0,
-  fee: 0,
-  limitMax: 0,
-  limitMin: 0,
-  limitDay: 0,
-  limitTotal: 0,
+  incomeGatewayId: '',
+  merchants: [],
+  fee: '',
+  limitMax: '',
+  limitMin: '',
+  limitDay: '',
+  limitTotal: '',
 })
 
 // =========== 表格控制部分 ===========
@@ -187,6 +210,10 @@ const getTableData = async() => {
     pageSize.value = table.data.pageSize
   }
 }
+
+watch(tableData, () => {
+  setMerchantIds()
+})
 
 getTableData()
 
@@ -257,6 +284,14 @@ const updateIncomeGatewayAuthFunc = async(row) => {
   type.value = 'update'
   if (res.code === 0) {
     formData.value = res.data.reincomeGatewayAuth
+    // formData.value.merchants.forEach((item, index, arr) => {
+    //   arr[index] = [arr[index]['ID']]
+    // })
+    const merchantIds = formData.value.merchants && formData.value.merchants.map(i => {
+      return [i.ID]
+    })
+    formData.value.merchants = merchantIds
+    // this.$set(formData, 'merchants', merchantIds)
     dialogFormVisible.value = true
   }
 }
@@ -289,17 +324,21 @@ const openDialog = () => {
 const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
-    incomeGatewayId: 0,
-    merchantId: 0,
-    fee: 0,
-    limitMax: 0,
-    limitMin: 0,
-    limitDay: 0,
-    limitTotal: 0,
+    incomeGatewayId: '',
+    merchants: [],
+    fee: '',
+    limitMax: '',
+    limitMin: '',
+    limitDay: '',
+    limitTotal: '',
   }
 }
 // 弹窗确定
 const enterDialog = async() => {
+  formData.value.incomeGatewayId = formData.value.incomeGatewayId[0]
+  formData.value.merchants.forEach((item, index, arr) => {
+    arr[index] = arr[index][0]
+  })
   let res
   switch (type.value) {
     case 'create':
@@ -321,6 +360,47 @@ const enterDialog = async() => {
     getTableData()
   }
 }
+
+const incomeGatewayOptions = ref([])
+const merchantOptions = ref([])
+
+const setIncomeGatewayOptions = async() => {
+  incomeGatewayOptions.value = []
+  const res = await getIncomeGatewayList({ page: 1, pageSize: 999 })
+  res.data.list && res.data.list.forEach(item => {
+    const option = {
+      ID: item.ID,
+      name: item.name,
+    }
+    incomeGatewayOptions.value.push(option)
+  })
+}
+
+const setMerchantOptions = async() => {
+  merchantOptions.value = []
+  const res = await getMerchantList({ page: 1, pageSize: 999 })
+  res.data.list && res.data.list.forEach(item => {
+    const option = {
+      ID: item.ID,
+      nickName: item.nickName,
+    }
+    merchantOptions.value.push(option)
+  })
+}
+
+setMerchantOptions()
+
+setIncomeGatewayOptions()
+
+const setMerchantIds = () => {
+  tableData.value && tableData.value.forEach((incomeGatewayAuth) => {
+    const merchantIds = incomeGatewayAuth.merchants && incomeGatewayAuth.merchants.map(i => {
+      return i.ID
+    })
+    incomeGatewayAuth.merchantIds = merchantIds
+  })
+}
+
 </script>
 
 <style>

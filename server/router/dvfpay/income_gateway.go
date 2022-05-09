@@ -15,13 +15,14 @@ func (s *IncomeGatewayRouter) InitIncomeGatewayRouter(Router *gin.RouterGroup) {
 	incomeGatewayRouterWithoutRecord := Router.Group("incomeGateway")
 	var incomeGatewayApi = v1.ApiGroupApp.DvfpayApiGroup.IncomeGatewayApi
 	{
-		incomeGatewayRouter.POST("createIncomeGateway", incomeGatewayApi.CreateIncomeGateway)   // 新建IncomeGateway
-		incomeGatewayRouter.DELETE("deleteIncomeGateway", incomeGatewayApi.DeleteIncomeGateway) // 删除IncomeGateway
+		incomeGatewayRouter.POST("createIncomeGateway", incomeGatewayApi.CreateIncomeGateway)             // 新建IncomeGateway
+		incomeGatewayRouter.DELETE("deleteIncomeGateway", incomeGatewayApi.DeleteIncomeGateway)           // 删除IncomeGateway
 		incomeGatewayRouter.DELETE("deleteIncomeGatewayByIds", incomeGatewayApi.DeleteIncomeGatewayByIds) // 批量删除IncomeGateway
-		incomeGatewayRouter.PUT("updateIncomeGateway", incomeGatewayApi.UpdateIncomeGateway)    // 更新IncomeGateway
+		incomeGatewayRouter.PUT("updateIncomeGateway", incomeGatewayApi.UpdateIncomeGateway)              // 更新IncomeGateway
 	}
 	{
-		incomeGatewayRouterWithoutRecord.GET("findIncomeGateway", incomeGatewayApi.FindIncomeGateway)        // 根据ID获取IncomeGateway
-		incomeGatewayRouterWithoutRecord.GET("getIncomeGatewayList", incomeGatewayApi.GetIncomeGatewayList)  // 获取IncomeGateway列表
+		incomeGatewayRouterWithoutRecord.GET("findIncomeGateway", incomeGatewayApi.FindIncomeGateway)       // 根据ID获取IncomeGateway
+		incomeGatewayRouterWithoutRecord.GET("getIncomeGatewayList", incomeGatewayApi.GetIncomeGatewayList) // 获取IncomeGateway列表
+
 	}
 }

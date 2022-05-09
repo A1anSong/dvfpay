@@ -49,7 +49,8 @@
         </el-table-column>
         <el-table-column align="left" label="名称" prop="name" width="120" />
         <el-table-column align="left" label="类型" prop="type" width="120" />
-        <el-table-column align="left" label="参数" prop="parameter" width="120" />
+        <el-table-column align="left" label="币种" prop="currency" width="120" />
+        <el-table-column align="left" label="参数" prop="parameter" width="120" show-overflow-tooltip />
         <el-table-column align="left" label="状态" prop="status" width="120" />
         <el-table-column align="left" label="最大限额" prop="limitMax" width="120" />
         <el-table-column align="left" label="最小限额" prop="limitMin" width="120" />
@@ -88,6 +89,9 @@
         <el-form-item label="类型:">
           <el-input v-model="formData.type" clearable placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="币种:">
+          <el-input v-model="formData.currency" clearable placeholder="请输入"/>
+        </el-form-item>
         <el-form-item label="参数:">
           <el-input v-model="formData.parameter" clearable placeholder="请输入" />
         </el-form-item>
@@ -95,13 +99,13 @@
           <el-input v-model="formData.status" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="最大限额:">
-          <el-input v-model="formData.limitMax" clearable placeholder="请输入" />
+          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="最小限额:">
-          <el-input v-model="formData.limitMin" clearable placeholder="请输入" />
+          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="手续费:">
-          <el-input v-model="formData.fee" clearable placeholder="请输入" />
+          <el-input v-model.number="formData.fee" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -139,6 +143,7 @@ import { ref } from 'vue'
 const formData = ref({
   name: '',
   type: '',
+  currency: '',
   parameter: '',
   status: '',
   limitMax: '',

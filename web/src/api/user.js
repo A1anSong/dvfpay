@@ -173,10 +173,25 @@ export const resetPassword = (data) => {
 // @Param data body modelInterface.PageInfo true "分页获取商户列表"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /user/getMerchantList [post]
+export const getMerchantInfoList = (data) => {
+  return service({
+    url: '/user/getMerchantInfoList',
+    method: 'post',
+    data: data
+  })
+}
+// @Tags Merchant
+// @Summary 获取商户列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body modelInterface.PageInfo true "获取商户列表"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /user/getMerchantList [post]
 export const getMerchantList = (data) => {
   return service({
     url: '/user/getMerchantList',
-    method: 'post',
+    method: 'get',
     data: data
   })
 }

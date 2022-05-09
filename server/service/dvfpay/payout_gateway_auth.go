@@ -57,9 +57,6 @@ func (payoutGatewayAuthService *PayoutGatewayAuthService) GetPayoutGatewayAuthIn
 	if info.PayoutGatewayId != nil {
 		db = db.Where("payout_gateway_id = ?", info.PayoutGatewayId)
 	}
-	if info.MerchantId != nil {
-		db = db.Where("merchant_id = ?", info.MerchantId)
-	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return

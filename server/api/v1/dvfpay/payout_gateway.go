@@ -2,20 +2,19 @@ package dvfpay
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
+	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type PayoutGatewayApi struct {
 }
 
 var payoutGatewayService = service.ServiceGroupApp.DvfpayServiceGroup.PayoutGatewayService
-
 
 // CreatePayoutGateway 创建PayoutGateway
 // @Tags PayoutGateway
@@ -30,7 +29,7 @@ func (payoutGatewayApi *PayoutGatewayApi) CreatePayoutGateway(c *gin.Context) {
 	var payoutGateway dvfpay.PayoutGateway
 	_ = c.ShouldBindJSON(&payoutGateway)
 	if err := payoutGatewayService.CreatePayoutGateway(payoutGateway); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -50,7 +49,7 @@ func (payoutGatewayApi *PayoutGatewayApi) DeletePayoutGateway(c *gin.Context) {
 	var payoutGateway dvfpay.PayoutGateway
 	_ = c.ShouldBindJSON(&payoutGateway)
 	if err := payoutGatewayService.DeletePayoutGateway(payoutGateway); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -68,9 +67,9 @@ func (payoutGatewayApi *PayoutGatewayApi) DeletePayoutGateway(c *gin.Context) {
 // @Router /payoutGateway/deletePayoutGatewayByIds [delete]
 func (payoutGatewayApi *PayoutGatewayApi) DeletePayoutGatewayByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := payoutGatewayService.DeletePayoutGatewayByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -90,7 +89,7 @@ func (payoutGatewayApi *PayoutGatewayApi) UpdatePayoutGateway(c *gin.Context) {
 	var payoutGateway dvfpay.PayoutGateway
 	_ = c.ShouldBindJSON(&payoutGateway)
 	if err := payoutGatewayService.UpdatePayoutGateway(payoutGateway); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -110,7 +109,7 @@ func (payoutGatewayApi *PayoutGatewayApi) FindPayoutGateway(c *gin.Context) {
 	var payoutGateway dvfpay.PayoutGateway
 	_ = c.ShouldBindQuery(&payoutGateway)
 	if err, repayoutGateway := payoutGatewayService.GetPayoutGateway(payoutGateway.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"repayoutGateway": repayoutGateway}, c)
@@ -130,14 +129,14 @@ func (payoutGatewayApi *PayoutGatewayApi) GetPayoutGatewayList(c *gin.Context) {
 	var pageInfo dvfpayReq.PayoutGatewaySearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := payoutGatewayService.GetPayoutGatewayInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }

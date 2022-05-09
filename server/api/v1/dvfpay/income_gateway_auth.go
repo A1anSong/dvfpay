@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
 	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -26,8 +27,38 @@ var incomeGatewayAuthService = service.ServiceGroupApp.DvfpayServiceGroup.Income
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /incomeGatewayAuth/createIncomeGatewayAuth [post]
 func (incomeGatewayAuthApi *IncomeGatewayAuthApi) CreateIncomeGatewayAuth(c *gin.Context) {
-	var incomeGatewayAuth dvfpay.IncomeGatewayAuth
-	_ = c.ShouldBindJSON(&incomeGatewayAuth)
+	type IncomeGatewayAuthRequest struct {
+		IncomeGatewayId uint   `json:"incomeGatewayId"`
+		Merchants       []uint `json:"merchants"`
+		Fee             int    `json:"fee"`
+		LimitMax        int    `json:"limitMax"`
+		LimitMin        int    `json:"limitMin"`
+		LimitDay        int    `json:"limitDay"`
+		LimitTotal      int    `json:"limitTotal"`
+	}
+	var incomeGatewayAuthRequest IncomeGatewayAuthRequest
+	_ = c.ShouldBindJSON(&incomeGatewayAuthRequest)
+	var merchants []*system.SysUser
+	for _, v := range incomeGatewayAuthRequest.Merchants {
+		merchants = append(merchants, &system.SysUser{
+			GVA_MODEL: global.GVA_MODEL{
+				ID: v,
+			},
+		})
+	}
+	incomeGatewayAuth := dvfpay.IncomeGatewayAuth{
+		IncomeGateway: dvfpay.IncomeGateway{
+			GVA_MODEL: global.GVA_MODEL{
+				ID: incomeGatewayAuthRequest.IncomeGatewayId,
+			},
+		},
+		Merchants:  merchants,
+		Fee:        &incomeGatewayAuthRequest.Fee,
+		LimitMax:   &incomeGatewayAuthRequest.LimitMax,
+		LimitMin:   &incomeGatewayAuthRequest.LimitMin,
+		LimitDay:   &incomeGatewayAuthRequest.LimitDay,
+		LimitTotal: &incomeGatewayAuthRequest.LimitTotal,
+	}
 	if err := incomeGatewayAuthService.CreateIncomeGatewayAuth(incomeGatewayAuth); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -48,6 +79,11 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) CreateIncomeGatewayAuth(c *gin
 func (incomeGatewayAuthApi *IncomeGatewayAuthApi) DeleteIncomeGatewayAuth(c *gin.Context) {
 	var incomeGatewayAuth dvfpay.IncomeGatewayAuth
 	_ = c.ShouldBindJSON(&incomeGatewayAuth)
+
+	global.GVA_DB.Exec("delete "+
+		"from dvfpay_income_gateway_auth_merchants "+
+		"where income_gateway_auth_id = ?", incomeGatewayAuth.ID)
+
 	if err := incomeGatewayAuthService.DeleteIncomeGatewayAuth(incomeGatewayAuth); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
@@ -86,14 +122,69 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) DeleteIncomeGatewayAuthByIds(c
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /incomeGatewayAuth/updateIncomeGatewayAuth [put]
 func (incomeGatewayAuthApi *IncomeGatewayAuthApi) UpdateIncomeGatewayAuth(c *gin.Context) {
+	type IncomeGatewayAuthRequest struct {
+		ID              uint   `json:"ID"`
+		IncomeGatewayId uint   `json:"incomeGatewayId"`
+		Merchants       []uint `json:"merchants"`
+		Fee             int    `json:"fee"`
+		LimitMax        int    `json:"limitMax"`
+		LimitMin        int    `json:"limitMin"`
+		LimitDay        int    `json:"limitDay"`
+		LimitTotal      int    `json:"limitTotal"`
+	}
+	var incomeGatewayAuthRequest IncomeGatewayAuthRequest
+	_ = c.ShouldBindJSON(&incomeGatewayAuthRequest)
+	var merchants []*system.SysUser
+	for _, v := range incomeGatewayAuthRequest.Merchants {
+		merchants = append(merchants, &system.SysUser{
+			GVA_MODEL: global.GVA_MODEL{
+				ID: v,
+			},
+		})
+	}
+
+	global.GVA_DB.Exec("delete "+
+		"from dvfpay_income_gateway_auth_merchants "+
+		"where income_gateway_auth_id = ?", incomeGatewayAuthRequest.ID)
+
 	var incomeGatewayAuth dvfpay.IncomeGatewayAuth
-	_ = c.ShouldBindJSON(&incomeGatewayAuth)
-	if err := incomeGatewayAuthService.UpdateIncomeGatewayAuth(incomeGatewayAuth); err != nil {
+	global.GVA_DB.First(&incomeGatewayAuth, incomeGatewayAuthRequest.ID)
+	incomeGatewayAuth.IncomeGatewayId = &incomeGatewayAuthRequest.IncomeGatewayId
+	incomeGatewayAuth.Merchants = merchants
+	incomeGatewayAuth.Fee = &incomeGatewayAuthRequest.Fee
+	incomeGatewayAuth.LimitMax = &incomeGatewayAuthRequest.LimitMax
+	incomeGatewayAuth.LimitMin = &incomeGatewayAuthRequest.LimitMin
+	incomeGatewayAuth.LimitDay = &incomeGatewayAuthRequest.LimitDay
+	incomeGatewayAuth.LimitTotal = &incomeGatewayAuthRequest.LimitTotal
+	if err := global.GVA_DB.Save(&incomeGatewayAuth).Error; err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
 	}
+
+	//incomeGatewayAuth := dvfpay.IncomeGatewayAuth{
+	//	GVA_MODEL: global.GVA_MODEL{
+	//		ID: incomeGatewayAuthRequest.ID,
+	//	},
+	//	IncomeGateway: dvfpay.IncomeGateway{
+	//		GVA_MODEL: global.GVA_MODEL{
+	//			ID: incomeGatewayAuthRequest.IncomeGatewayId,
+	//		},
+	//	},
+	//	Merchants:  merchants,
+	//	Fee:        &incomeGatewayAuthRequest.Fee,
+	//	LimitMax:   &incomeGatewayAuthRequest.LimitMax,
+	//	LimitMin:   &incomeGatewayAuthRequest.LimitMin,
+	//	LimitDay:   &incomeGatewayAuthRequest.LimitDay,
+	//	LimitTotal: &incomeGatewayAuthRequest.LimitTotal,
+	//}
+	//if err := incomeGatewayAuthService.UpdateIncomeGatewayAuth(incomeGatewayAuth); err != nil {
+	//	global.GVA_LOG.Error("更新失败!", zap.Error(err))
+	//	response.FailWithMessage("更新失败", c)
+	//} else {
+	//response.OkWithMessage("更新成功", c)
+	//}
 }
 
 // FindIncomeGatewayAuth 用id查询IncomeGatewayAuth

@@ -11,6 +11,7 @@ type IncomeGateway struct {
 	global.GVA_MODEL
 	Name      string `json:"name" form:"name" gorm:"column:name;comment:;"`
 	Type      string `json:"type" form:"type" gorm:"column:type;comment:;"`
+	Currency  string `json:"currency" form:"currency" gorm:"column:currency;comment:;"`
 	Parameter string `json:"parameter" form:"parameter" gorm:"column:parameter;comment:;"`
 	Status    string `json:"status" form:"status" gorm:"column:status;comment:;"`
 	LimitMax  *int   `json:"limitMax" form:"limitMax" gorm:"column:limit_max;comment:;"`

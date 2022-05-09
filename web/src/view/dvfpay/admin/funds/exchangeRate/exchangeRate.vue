@@ -2,11 +2,8 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="基础币种">
-          <el-input v-model="searchInfo.from" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item label="目标币种">
-          <el-input v-model="searchInfo.to" placeholder="搜索条件" />
+        <el-form-item label="名称">
+          <el-input v-model="searchInfo.name" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
@@ -47,9 +44,8 @@
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="基础币种" prop="from" width="120" />
-        <el-table-column align="left" label="目标币种" prop="to" width="120" />
-        <el-table-column align="left" label="汇率值" prop="rate" width="120" />
+        <el-table-column align="left" label="名称" prop="name" width="120" />
+        <el-table-column align="left" label="汇率值" prop="rate" :formatter="formatRate" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -78,11 +74,8 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" label-width="80px">
-        <el-form-item label="基础币种:">
-          <el-input v-model="formData.from" clearable placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="目标币种:">
-          <el-input v-model="formData.to" clearable placeholder="请输入" />
+        <el-form-item label="名称:">
+          <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="汇率值:">
           <el-input v-model.number="formData.rate" clearable placeholder="请输入" />
@@ -121,8 +114,7 @@ import { ref } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
-  from: '',
-  to: '',
+  name: '',
   rate: 0,
 })
 
@@ -296,6 +288,11 @@ const enterDialog = async() => {
     closeDialog()
     getTableData()
   }
+}
+
+// column formatter
+const formatRate = (row, col, value, index) => {
+  return (value / 10000).toFixed(2)
 }
 </script>
 

@@ -23,5 +23,7 @@ func (s *PayoutGatewayAuthRouter) InitPayoutGatewayAuthRouter(Router *gin.Router
 	{
 		payoutGatewayAuthRouterWithoutRecord.GET("findPayoutGatewayAuth", payoutGatewayAuthApi.FindPayoutGatewayAuth)       // 根据ID获取PayoutGatewayAuth
 		payoutGatewayAuthRouterWithoutRecord.GET("getPayoutGatewayAuthList", payoutGatewayAuthApi.GetPayoutGatewayAuthList) // 获取PayoutGatewayAuth列表
+
+		payoutGatewayAuthRouterWithoutRecord.GET("getMerchantPayoutGatewayAuthList", payoutGatewayAuthApi.GetMerchantPayoutGatewayAuthList) // 获取PayoutGatewayAuth列表
 	}
 }

@@ -52,14 +52,14 @@
                 <el-tooltip
                   class="item"
                   effect="light"
-                  content="北京反转极光科技有限公司-技术部-前端事业群"
+                  content="DVFPay"
                   placement="top"
                 >
                   <li>
                     <el-icon>
                       <data-analysis />
                     </el-icon>
-                    北京反转极光科技有限公司-技术部-前端事业群
+                    DVFPay
                   </li>
                 </el-tooltip>
                 <li>
@@ -71,14 +71,14 @@
                 <el-tooltip
                   class="item"
                   effect="light"
-                  content="GoLang/JavaScript/Vue/Gorm"
+                  content="发财多多"
                   placement="top"
                 >
                   <li>
                     <el-icon>
                       <medal />
                     </el-icon>
-                    GoLang/JavaScript/Vue/Gorm
+                    发财多多
                   </li>
                 </el-tooltip>
               </ul>

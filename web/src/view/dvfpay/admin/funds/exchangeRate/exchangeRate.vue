@@ -45,7 +45,7 @@
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="名称" prop="name" width="120" />
-        <el-table-column align="left" label="汇率值" prop="rate" :formatter="formatRate" width="120" />
+        <el-table-column align="left" label="汇率值" prop="rate" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -288,11 +288,6 @@ const enterDialog = async() => {
     closeDialog()
     getTableData()
   }
-}
-
-// column formatter
-const formatRate = (row, col, value, index) => {
-  return (value / 10000).toFixed(2)
 }
 </script>
 

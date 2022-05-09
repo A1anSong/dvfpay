@@ -64,3 +64,23 @@ func (incomeGatewayAuthService *IncomeGatewayAuthService) GetIncomeGatewayAuthIn
 	err = db.Limit(limit).Offset(offset).Preload("IncomeGateway").Preload("Merchants").Find(&incomeGatewayAuths).Error
 	return err, incomeGatewayAuths, total
 }
+
+func (incomeGatewayAuthService *IncomeGatewayAuthService) GetMerchantIncomeGatewayAuthInfoList(info dvfpayReq.IncomeGatewayAuthSearch, merchantID uint) (err error, list interface{}, total int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	// 创建db
+	var authIds []uint
+	global.GVA_DB.Table("dvfpay_income_gateway_auth_merchants").Where("sys_user_id = ?", merchantID).Select("distinct income_gateway_auth_id").Find(&authIds)
+	db := global.GVA_DB.Model(&dvfpay.IncomeGatewayAuth{}).Where("deleted_at is null and id in ?", authIds)
+	var incomeGatewayAuths []dvfpay.IncomeGatewayAuth
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.IncomeGatewayId != nil {
+		db = db.Where("income_gateway_id = ?", info.IncomeGatewayId)
+	}
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Preload("IncomeGateway").Find(&incomeGatewayAuths).Error
+	return err, incomeGatewayAuths, total
+}

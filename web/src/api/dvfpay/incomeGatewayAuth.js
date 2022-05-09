@@ -95,3 +95,11 @@ export const getIncomeGatewayAuthList = (params) => {
     params
   })
 }
+
+export const getMerchantIncomeGatewayAuthList = (params) => {
+  return service({
+    url: '/incomeGatewayAuth/getMerchantIncomeGatewayAuthList',
+    method: 'get',
+    params
+  })
+}

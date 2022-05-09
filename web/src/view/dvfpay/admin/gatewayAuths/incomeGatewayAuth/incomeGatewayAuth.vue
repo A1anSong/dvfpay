@@ -3,10 +3,10 @@
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item label="代收通道id">
-          <el-input v-model="searchInfo.incomeGatewayId" placeholder="搜索条件"/>
+          <el-input v-model="searchInfo.incomeGatewayId" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item label="商户id">
-          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件"/>
+          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
@@ -17,60 +17,60 @@
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
-        <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-          <p>确定要删除吗？</p>
-          <div style="text-align: right; margin-top: 8px;">
-            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>
-            <el-button size="small" type="primary" @click="onDelete">确定</el-button>
-          </div>
-          <template #reference>
-            <el-button
-                icon="delete"
-                size="small"
-                style="margin-left: 10px;"
-                :disabled="!multipleSelection.length"
-                @click="deleteVisible = true"
-            >删除
-            </el-button>
-          </template>
-        </el-popover>
+<!--        <el-popover v-model:visible="deleteVisible" placement="top" width="160">-->
+<!--          <p>确定要删除吗？</p>-->
+<!--          <div style="text-align: right; margin-top: 8px;">-->
+<!--            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>-->
+<!--            <el-button size="small" type="primary" @click="onDelete">确定</el-button>-->
+<!--          </div>-->
+<!--          <template #reference>-->
+<!--            <el-button-->
+<!--              icon="delete"-->
+<!--              size="small"-->
+<!--              style="margin-left: 10px;"-->
+<!--              :disabled="!multipleSelection.length"-->
+<!--              @click="deleteVisible = true"-->
+<!--            >删除-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-popover>-->
       </div>
       <el-table
-          ref="multipleTable"
-          style="width: 100%"
-          tooltip-effect="dark"
-          :data="tableData"
-          row-key="ID"
-          @selection-change="handleSelectionChange"
+        ref="multipleTable"
+        style="width: 100%"
+        tooltip-effect="dark"
+        :data="tableData"
+        row-key="ID"
+        @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55"/>
+<!--        <el-table-column type="selection" width="55" />-->
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="代收通道" prop="incomeGateway.name" width="120"/>
+        <el-table-column align="left" label="代收通道" prop="incomeGateway.name" width="120" />
         <el-table-column align="left" label="商户" min-width="200">
           <template #default="scope">
             <el-cascader
-                v-model="scope.row.merchantIds"
-                :options="merchantOptions"
-                collapse-tags
-                :props="{ multiple:true,label:'nickName',value:'ID' }"
+              v-model="scope.row.merchantIds"
+              :options="merchantOptions"
+              collapse-tags
+              :props="{ multiple:true,label:'nickName',value:'ID' }"
             />
           </template>
         </el-table-column>
-        <el-table-column align="left" label="手续费" prop="fee" width="120"/>
-        <el-table-column align="left" label="单笔最高" prop="limitMax" width="120"/>
-        <el-table-column align="left" label="单笔最低" prop="limitMin" width="120"/>
-        <el-table-column align="left" label="单日限制" prop="limitDay" width="120"/>
-        <el-table-column align="left" label="总量限制" prop="limitTotal" width="120"/>
+        <el-table-column align="left" label="手续费" prop="fee" width="120" />
+        <el-table-column align="left" label="单笔最高" prop="limitMax" width="120" />
+        <el-table-column align="left" label="单笔最低" prop="limitMin" width="120" />
+        <el-table-column align="left" label="单日限制" prop="limitDay" width="120" />
+        <el-table-column align="left" label="总量限制" prop="limitTotal" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
-                type="text"
-                icon="edit"
-                size="small"
-                class="table-button"
-                @click="updateIncomeGatewayAuthFunc(scope.row)"
+              type="text"
+              icon="edit"
+              size="small"
+              class="table-button"
+              @click="updateIncomeGatewayAuthFunc(scope.row)"
             >变更
             </el-button>
             <el-button type="text" icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
@@ -79,13 +79,13 @@
       </el-table>
       <div class="gva-pagination">
         <el-pagination
-            layout="total, sizes, prev, pager, next, jumper"
-            :current-page="page"
-            :page-size="pageSize"
-            :page-sizes="[10, 30, 50, 100]"
-            :total="total"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
+          layout="total, sizes, prev, pager, next, jumper"
+          :current-page="page"
+          :page-size="pageSize"
+          :page-sizes="[10, 30, 50, 100]"
+          :total="total"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
         />
       </div>
     </div>
@@ -93,36 +93,36 @@
       <el-form :model="formData" label-position="right" label-width="80px">
         <el-form-item label="代收通道:">
           <el-cascader
-              v-model="formData.incomeGatewayId"
-              style="width:100%"
-              :options="incomeGatewayOptions"
-              :props="{ label:'name',value:'ID' }"
-              filterable
+            v-model="formData.incomeGatewayId"
+            style="width:100%"
+            :options="incomeGatewayOptions"
+            :props="{ label:'name',value:'ID' }"
+            filterable
           />
         </el-form-item>
         <el-form-item label="授权商户:">
           <el-cascader
-              v-model="formData.merchants"
-              style="width:100%"
-              :options="merchantOptions"
-              :props="{ multiple:true,label:'nickName',value:'ID' }"
-              filterable
+            v-model="formData.merchants"
+            style="width:100%"
+            :options="merchantOptions"
+            :props="{ multiple:true,label:'nickName',value:'ID' }"
+            filterable
           />
         </el-form-item>
         <el-form-item label="手续费:">
-          <el-input v-model.number="formData.fee" clearable placeholder="请输入"/>
+          <el-input v-model.number="formData.fee" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="单笔最高:">
-          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入"/>
+          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="单笔最低:">
-          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入"/>
+          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="单日限制:">
-          <el-input v-model.number="formData.limitDay" clearable placeholder="请输入"/>
+          <el-input v-model.number="formData.limitDay" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="总量限制:">
-          <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入"/>
+          <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -145,7 +145,7 @@ export default {
 import {
   createIncomeGatewayAuth,
   deleteIncomeGatewayAuth,
-  deleteIncomeGatewayAuthByIds,
+  // deleteIncomeGatewayAuthByIds,
   updateIncomeGatewayAuth,
   findIncomeGatewayAuth,
   getIncomeGatewayAuthList,
@@ -245,35 +245,35 @@ const deleteRow = (row) => {
 }
 
 // 批量删除控制标记
-const deleteVisible = ref(false)
+// const deleteVisible = ref(false)
 
 // 多选删除
-const onDelete = async() => {
-  const ids = []
-  if (multipleSelection.value.length === 0) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择要删除的数据',
-    })
-    return
-  }
-  multipleSelection.value &&
-  multipleSelection.value.map(item => {
-    ids.push(item.ID)
-  })
-  const res = await deleteIncomeGatewayAuthByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功',
-    })
-    if (tableData.value.length === ids.length && page.value > 1) {
-      page.value--
-    }
-    deleteVisible.value = false
-    getTableData()
-  }
-}
+// const onDelete = async() => {
+//   const ids = []
+//   if (multipleSelection.value.length === 0) {
+//     ElMessage({
+//       type: 'warning',
+//       message: '请选择要删除的数据',
+//     })
+//     return
+//   }
+//   multipleSelection.value &&
+//   multipleSelection.value.map(item => {
+//     ids.push(item.ID)
+//   })
+//   const res = await deleteIncomeGatewayAuthByIds({ ids })
+//   if (res.code === 0) {
+//     ElMessage({
+//       type: 'success',
+//       message: '删除成功',
+//     })
+//     if (tableData.value.length === ids.length && page.value > 1) {
+//       page.value--
+//     }
+//     deleteVisible.value = false
+//     getTableData()
+//   }
+// }
 
 // 行为控制标记（弹窗内部需要增还是改）
 const type = ref('')
@@ -284,14 +284,10 @@ const updateIncomeGatewayAuthFunc = async(row) => {
   type.value = 'update'
   if (res.code === 0) {
     formData.value = res.data.reincomeGatewayAuth
-    // formData.value.merchants.forEach((item, index, arr) => {
-    //   arr[index] = [arr[index]['ID']]
-    // })
     const merchantIds = formData.value.merchants && formData.value.merchants.map(i => {
       return [i.ID]
     })
     formData.value.merchants = merchantIds
-    // this.$set(formData, 'merchants', merchantIds)
     dialogFormVisible.value = true
   }
 }
@@ -376,6 +372,8 @@ const setIncomeGatewayOptions = async() => {
   })
 }
 
+setIncomeGatewayOptions()
+
 const setMerchantOptions = async() => {
   merchantOptions.value = []
   const res = await getMerchantList({ page: 1, pageSize: 999 })
@@ -389,8 +387,6 @@ const setMerchantOptions = async() => {
 }
 
 setMerchantOptions()
-
-setIncomeGatewayOptions()
 
 const setMerchantIds = () => {
   tableData.value && tableData.value.forEach((incomeGatewayAuth) => {

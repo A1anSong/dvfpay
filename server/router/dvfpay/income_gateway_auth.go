@@ -23,5 +23,7 @@ func (s *IncomeGatewayAuthRouter) InitIncomeGatewayAuthRouter(Router *gin.Router
 	{
 		incomeGatewayAuthRouterWithoutRecord.GET("findIncomeGatewayAuth", incomeGatewayAuthApi.FindIncomeGatewayAuth)       // 根据ID获取IncomeGatewayAuth
 		incomeGatewayAuthRouterWithoutRecord.GET("getIncomeGatewayAuthList", incomeGatewayAuthApi.GetIncomeGatewayAuthList) // 获取IncomeGatewayAuth列表
+
+		incomeGatewayAuthRouterWithoutRecord.GET("getMerchantIncomeGatewayAuthList", incomeGatewayAuthApi.GetMerchantIncomeGatewayAuthList)
 	}
 }

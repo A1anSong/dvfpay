@@ -258,8 +258,7 @@ func (userService *UserService) GetMerchantList() (err error, list interface{}) 
 		ID       uint
 		NickName string `json:"nickName" gorm:"default:系统用户;comment:用户昵称"`
 	}
-	db := global.GVA_DB.Session(&gorm.Session{})
 	var merchantList []MerchantList
-	err = db.Table("sys_users").Where("deleted_at is null and authority_id = ?", "13").Select("id", "nick_name").Find(&merchantList).Error
+	err = global.GVA_DB.Table("sys_users").Where("deleted_at is null and authority_id = ?", "13").Select("id", "nick_name").Find(&merchantList).Error
 	return err, merchantList
 }

@@ -41,7 +41,7 @@ func (payoutGatewayAuthService *PayoutGatewayAuthService) UpdatePayoutGatewayAut
 // GetPayoutGatewayAuth 根据id获取PayoutGatewayAuth记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (payoutGatewayAuthService *PayoutGatewayAuthService) GetPayoutGatewayAuth(id uint) (err error, payoutGatewayAuth dvfpay.PayoutGatewayAuth) {
-	err = global.GVA_DB.Where("id = ?", id).First(&payoutGatewayAuth).Error
+	err = global.GVA_DB.Where("id = ?", id).Preload("PayoutGateway").Preload("Merchants").First(&payoutGatewayAuth).Error
 	return
 }
 
@@ -61,6 +61,26 @@ func (payoutGatewayAuthService *PayoutGatewayAuthService) GetPayoutGatewayAuthIn
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&payoutGatewayAuths).Error
+	err = db.Limit(limit).Offset(offset).Preload("PayoutGateway").Preload("Merchants").Find(&payoutGatewayAuths).Error
+	return err, payoutGatewayAuths, total
+}
+
+func (payoutGatewayAuthService *PayoutGatewayAuthService) GetMerchantPayoutGatewayAuthInfoList(info dvfpayReq.PayoutGatewayAuthSearch, merchantID uint) (err error, list interface{}, total int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	// 创建db
+	var authIds []uint
+	global.GVA_DB.Table("dvfpay_payout_gateway_auth_merchants").Where("sys_user_id = ?", merchantID).Select("distinct payout_gateway_auth_id").Find(&authIds)
+	db := global.GVA_DB.Model(&dvfpay.PayoutGatewayAuth{}).Where("deleted_at is null and id in ?", authIds)
+	var payoutGatewayAuths []dvfpay.PayoutGatewayAuth
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.PayoutGatewayId != nil {
+		db = db.Where("payout_gateway_id = ?", info.PayoutGatewayId)
+	}
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Preload("PayoutGateway").Find(&payoutGatewayAuths).Error
 	return err, payoutGatewayAuths, total
 }

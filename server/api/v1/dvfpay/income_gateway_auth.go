@@ -8,6 +8,7 @@ import (
 	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -149,7 +150,9 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) UpdateIncomeGatewayAuth(c *gin
 
 	var incomeGatewayAuth dvfpay.IncomeGatewayAuth
 	global.GVA_DB.First(&incomeGatewayAuth, incomeGatewayAuthRequest.ID)
-	incomeGatewayAuth.IncomeGatewayId = &incomeGatewayAuthRequest.IncomeGatewayId
+	var incomeGateWay dvfpay.IncomeGateway
+	global.GVA_DB.First(&incomeGateWay, incomeGatewayAuthRequest.IncomeGatewayId)
+	incomeGatewayAuth.IncomeGateway = incomeGateWay
 	incomeGatewayAuth.Merchants = merchants
 	incomeGatewayAuth.Fee = &incomeGatewayAuthRequest.Fee
 	incomeGatewayAuth.LimitMax = &incomeGatewayAuthRequest.LimitMax
@@ -162,29 +165,6 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) UpdateIncomeGatewayAuth(c *gin
 	} else {
 		response.OkWithMessage("更新成功", c)
 	}
-
-	//incomeGatewayAuth := dvfpay.IncomeGatewayAuth{
-	//	GVA_MODEL: global.GVA_MODEL{
-	//		ID: incomeGatewayAuthRequest.ID,
-	//	},
-	//	IncomeGateway: dvfpay.IncomeGateway{
-	//		GVA_MODEL: global.GVA_MODEL{
-	//			ID: incomeGatewayAuthRequest.IncomeGatewayId,
-	//		},
-	//	},
-	//	Merchants:  merchants,
-	//	Fee:        &incomeGatewayAuthRequest.Fee,
-	//	LimitMax:   &incomeGatewayAuthRequest.LimitMax,
-	//	LimitMin:   &incomeGatewayAuthRequest.LimitMin,
-	//	LimitDay:   &incomeGatewayAuthRequest.LimitDay,
-	//	LimitTotal: &incomeGatewayAuthRequest.LimitTotal,
-	//}
-	//if err := incomeGatewayAuthService.UpdateIncomeGatewayAuth(incomeGatewayAuth); err != nil {
-	//	global.GVA_LOG.Error("更新失败!", zap.Error(err))
-	//	response.FailWithMessage("更新失败", c)
-	//} else {
-	//response.OkWithMessage("更新成功", c)
-	//}
 }
 
 // FindIncomeGatewayAuth 用id查询IncomeGatewayAuth
@@ -220,6 +200,23 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) GetIncomeGatewayAuthList(c *gi
 	var pageInfo dvfpayReq.IncomeGatewayAuthSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := incomeGatewayAuthService.GetIncomeGatewayAuthInfoList(pageInfo); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+func (incomeGatewayAuthApi *IncomeGatewayAuthApi) GetMerchantIncomeGatewayAuthList(c *gin.Context) {
+	var pageInfo dvfpayReq.IncomeGatewayAuthSearch
+	_ = c.ShouldBindQuery(&pageInfo)
+	merchantID := utils.GetUserID(c)
+	if err, list, total := incomeGatewayAuthService.GetMerchantIncomeGatewayAuthInfoList(pageInfo, merchantID); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

@@ -6,7 +6,9 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
 	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -26,8 +28,38 @@ var payoutGatewayAuthService = service.ServiceGroupApp.DvfpayServiceGroup.Payout
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /payoutGatewayAuth/createPayoutGatewayAuth [post]
 func (payoutGatewayAuthApi *PayoutGatewayAuthApi) CreatePayoutGatewayAuth(c *gin.Context) {
-	var payoutGatewayAuth dvfpay.PayoutGatewayAuth
-	_ = c.ShouldBindJSON(&payoutGatewayAuth)
+	type PayoutGatewayAuthRequest struct {
+		PayoutGatewayId uint   `json:"payoutGatewayId"`
+		Merchants       []uint `json:"merchants"`
+		Fee             int    `json:"fee"`
+		LimitMax        int    `json:"limitMax"`
+		LimitMin        int    `json:"limitMin"`
+		LimitDay        int    `json:"limitDay"`
+		LimitTotal      int    `json:"limitTotal"`
+	}
+	var payoutGatewayAuthRequest PayoutGatewayAuthRequest
+	_ = c.ShouldBindJSON(&payoutGatewayAuthRequest)
+	var merchants []*system.SysUser
+	for _, v := range payoutGatewayAuthRequest.Merchants {
+		merchants = append(merchants, &system.SysUser{
+			GVA_MODEL: global.GVA_MODEL{
+				ID: v,
+			},
+		})
+	}
+	payoutGatewayAuth := dvfpay.PayoutGatewayAuth{
+		PayoutGateway: dvfpay.PayoutGateway{
+			GVA_MODEL: global.GVA_MODEL{
+				ID: payoutGatewayAuthRequest.PayoutGatewayId,
+			},
+		},
+		Merchants:  merchants,
+		Fee:        &payoutGatewayAuthRequest.Fee,
+		LimitMax:   &payoutGatewayAuthRequest.LimitMax,
+		LimitMin:   &payoutGatewayAuthRequest.LimitMin,
+		LimitDay:   &payoutGatewayAuthRequest.LimitDay,
+		LimitTotal: &payoutGatewayAuthRequest.LimitTotal,
+	}
 	if err := payoutGatewayAuthService.CreatePayoutGatewayAuth(payoutGatewayAuth); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -48,6 +80,11 @@ func (payoutGatewayAuthApi *PayoutGatewayAuthApi) CreatePayoutGatewayAuth(c *gin
 func (payoutGatewayAuthApi *PayoutGatewayAuthApi) DeletePayoutGatewayAuth(c *gin.Context) {
 	var payoutGatewayAuth dvfpay.PayoutGatewayAuth
 	_ = c.ShouldBindJSON(&payoutGatewayAuth)
+
+	global.GVA_DB.Exec("delete "+
+		"from dvfpay_payout_gateway_auth_merchants "+
+		"where payout_gateway_auth_id = ?", payoutGatewayAuth.ID)
+
 	if err := payoutGatewayAuthService.DeletePayoutGatewayAuth(payoutGatewayAuth); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
@@ -86,9 +123,43 @@ func (payoutGatewayAuthApi *PayoutGatewayAuthApi) DeletePayoutGatewayAuthByIds(c
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /payoutGatewayAuth/updatePayoutGatewayAuth [put]
 func (payoutGatewayAuthApi *PayoutGatewayAuthApi) UpdatePayoutGatewayAuth(c *gin.Context) {
+	type PayoutGatewayAuthRequest struct {
+		ID              uint   `json:"ID"`
+		PayoutGatewayId uint   `json:"payoutGatewayId"`
+		Merchants       []uint `json:"merchants"`
+		Fee             int    `json:"fee"`
+		LimitMax        int    `json:"limitMax"`
+		LimitMin        int    `json:"limitMin"`
+		LimitDay        int    `json:"limitDay"`
+		LimitTotal      int    `json:"limitTotal"`
+	}
+	var payoutGatewayAuthRequest PayoutGatewayAuthRequest
+	_ = c.ShouldBindJSON(&payoutGatewayAuthRequest)
+	var merchants []*system.SysUser
+	for _, v := range payoutGatewayAuthRequest.Merchants {
+		merchants = append(merchants, &system.SysUser{
+			GVA_MODEL: global.GVA_MODEL{
+				ID: v,
+			},
+		})
+	}
+
+	global.GVA_DB.Exec("delete "+
+		"from dvfpay_payout_gateway_auth_merchants "+
+		"where payout_gateway_auth_id = ?", payoutGatewayAuthRequest.ID)
+
 	var payoutGatewayAuth dvfpay.PayoutGatewayAuth
-	_ = c.ShouldBindJSON(&payoutGatewayAuth)
-	if err := payoutGatewayAuthService.UpdatePayoutGatewayAuth(payoutGatewayAuth); err != nil {
+	global.GVA_DB.First(&payoutGatewayAuth, payoutGatewayAuthRequest.ID)
+	var payoutGateWay dvfpay.PayoutGateway
+	global.GVA_DB.First(&payoutGateWay, payoutGatewayAuthRequest.PayoutGatewayId)
+	payoutGatewayAuth.PayoutGateway = payoutGateWay
+	payoutGatewayAuth.Merchants = merchants
+	payoutGatewayAuth.Fee = &payoutGatewayAuthRequest.Fee
+	payoutGatewayAuth.LimitMax = &payoutGatewayAuthRequest.LimitMax
+	payoutGatewayAuth.LimitMin = &payoutGatewayAuthRequest.LimitMin
+	payoutGatewayAuth.LimitDay = &payoutGatewayAuthRequest.LimitDay
+	payoutGatewayAuth.LimitTotal = &payoutGatewayAuthRequest.LimitTotal
+	if err := global.GVA_DB.Save(&payoutGatewayAuth).Error; err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -129,6 +200,23 @@ func (payoutGatewayAuthApi *PayoutGatewayAuthApi) GetPayoutGatewayAuthList(c *gi
 	var pageInfo dvfpayReq.PayoutGatewayAuthSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := payoutGatewayAuthService.GetPayoutGatewayAuthInfoList(pageInfo); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+func (payoutGatewayAuthApi *PayoutGatewayAuthApi) GetMerchantPayoutGatewayAuthList(c *gin.Context) {
+	var pageInfo dvfpayReq.PayoutGatewayAuthSearch
+	_ = c.ShouldBindQuery(&pageInfo)
+	merchantID := utils.GetUserID(c)
+	if err, list, total := payoutGatewayAuthService.GetMerchantPayoutGatewayAuthInfoList(pageInfo, merchantID); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

@@ -95,3 +95,11 @@ export const getPayoutGatewayAuthList = (params) => {
     params
   })
 }
+
+export const getMerchantPayoutGatewayAuthList = (params) => {
+  return service({
+    url: '/payoutGatewayAuth/getMerchantPayoutGatewayAuthList',
+    method: 'get',
+    params
+  })
+}

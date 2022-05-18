@@ -5,7 +5,7 @@
         <div class="login_panle_form_title">
           <img
             class="login_panle_form_title_logo"
-            :src="$GIN_VUE_ADMIN.appLogo"
+            src="@/assets/logo_login.png"
             alt
           >
           <p class="login_panle_form_title_p">{{ $GIN_VUE_ADMIN.appName }}</p>
@@ -66,40 +66,41 @@
             </div>
           </el-form-item>
           <el-form-item>
+            <!--            <el-button-->
+            <!--              type="primary"-->
+            <!--              style="width: 46%"-->
+            <!--              size="large"-->
+            <!--              @click="checkInit"-->
+            <!--            >前往初始化</el-button>-->
             <el-button
               type="primary"
-              style="width: 46%"
               size="large"
-              @click="checkInit"
-            >前往初始化</el-button>
-            <el-button
-              type="primary"
-              size="large"
-              style="width: 46%; margin-left: 8%"
+              style="width: 100%"
               @click="submitForm"
-            >登 录</el-button>
+            >登 录
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
       <div class="login_panle_right" />
       <div class="login_panle_foot">
-        <div class="links">
-          <a href="https://www.google.com" target="_blank">
-            <img src="@/assets/docs.png" class="link-icon">
-          </a>
-          <a href="https://www.google.com" target="_blank">
-            <img src="@/assets/kefu.png" class="link-icon">
-          </a>
-          <a
-            href="https://www.google.com"
-            target="_blank"
-          >
-            <img src="@/assets/github.png" class="link-icon">
-          </a>
-          <a href="https://www.google.com" target="_blank">
-            <img src="@/assets/video.png" class="link-icon">
-          </a>
-        </div>
+        <!--        <div class="links">-->
+        <!--          <a href="https://www.google.com" target="_blank">-->
+        <!--            <img src="@/assets/docs.png" class="link-icon">-->
+        <!--          </a>-->
+        <!--          <a href="https://www.google.com" target="_blank">-->
+        <!--            <img src="@/assets/kefu.png" class="link-icon">-->
+        <!--          </a>-->
+        <!--          <a-->
+        <!--            href="https://www.google.com"-->
+        <!--            target="_blank"-->
+        <!--          >-->
+        <!--            <img src="@/assets/github.png" class="link-icon">-->
+        <!--          </a>-->
+        <!--          <a href="https://www.google.com" target="_blank">-->
+        <!--            <img src="@/assets/video.png" class="link-icon">-->
+        <!--          </a>-->
+        <!--        </div>-->
         <div class="copyright">
           <bootomInfo />
         </div>
@@ -116,13 +117,14 @@ export default {
 
 <script setup>
 import { captcha } from '@/api/user'
-import { checkDB } from '@/api/initdb'
-import bootomInfo from '@/view/layout/bottomInfo/bottomInfo.vue'
+// import { checkDB } from '@/api/initdb'
+// import bootomInfo from '@/view/layout/bottomInfo/bottomInfo.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useUserStore } from '@/pinia/modules/user'
-const router = useRouter()
+
+// const router = useRouter()
 // 验证函数
 const checkUsername = (rule, value, callback) => {
   if (value.length < 5) {
@@ -200,20 +202,20 @@ const submitForm = () => {
 }
 
 // 跳转初始化
-const checkInit = async() => {
-  const res = await checkDB()
-  if (res.code === 0) {
-    if (res.data?.needInit) {
-      userStore.NeedInit()
-      router.push({ name: 'Init' })
-    } else {
-      ElMessage({
-        type: 'info',
-        message: '已配置数据库信息，无法初始化',
-      })
-    }
-  }
-}
+// const checkInit = async() => {
+//   const res = await checkDB()
+//   if (res.code === 0) {
+//     if (res.data?.needInit) {
+//       userStore.NeedInit()
+//       router.push({ name: 'Init' })
+//     } else {
+//       ElMessage({
+//         type: 'info',
+//         message: '已配置数据库信息，无法初始化',
+//       })
+//     }
+//   }
+// }
 
 </script>
 

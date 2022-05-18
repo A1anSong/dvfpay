@@ -55,6 +55,7 @@
         <el-table-column align="left" label="最大限额" prop="limitMax" width="120" />
         <el-table-column align="left" label="最小限额" prop="limitMin" width="120" />
         <el-table-column align="left" label="手续费" prop="fee" width="120" />
+        <el-table-column align="left" label="备注" prop="remark" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -87,10 +88,21 @@
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="类型:">
-          <el-input v-model="formData.type" clearable placeholder="请输入" />
+          <el-select v-model="formData.type" placeholder="请输入" style="width: 100%">
+            <el-option
+              key="bank"
+              label="Bank"
+              value="bank"
+            />
+            <el-option
+              key="gateway"
+              label="Gateway"
+              value="gateway"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="币种:">
-          <el-input v-model="formData.currency" clearable placeholder="请输入"/>
+          <el-input v-model="formData.currency" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="参数:">
           <el-input v-model="formData.parameter" clearable placeholder="请输入" />
@@ -106,6 +118,9 @@
         </el-form-item>
         <el-form-item label="手续费:">
           <el-input v-model.number="formData.fee" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="备注:">
+          <el-input v-model.number="formData.remark" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -149,6 +164,7 @@ const formData = ref({
   limitMax: '',
   limitMin: '',
   fee: '',
+  remark: '',
 })
 
 // =========== 表格控制部分 ===========
@@ -295,7 +311,14 @@ const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
     name: '',
+    type: '',
+    currency: '',
     parameter: '',
+    status: '',
+    limitMax: '',
+    limitMin: '',
+    fee: '',
+    remark: '',
   }
 }
 // 弹窗确定

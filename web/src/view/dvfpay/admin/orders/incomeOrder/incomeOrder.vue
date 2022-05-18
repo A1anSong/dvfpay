@@ -36,7 +36,14 @@
             <el-button size="small" type="primary" @click="onDelete">确定</el-button>
           </div>
           <template #reference>
-            <el-button icon="delete" size="small" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">删除</el-button>
+            <el-button
+              icon="delete"
+              size="small"
+              style="margin-left: 10px;"
+              :disabled="!multipleSelection.length"
+              @click="deleteVisible = true"
+            >删除
+            </el-button>
           </template>
         </el-popover>
       </div>
@@ -59,9 +66,17 @@
         <el-table-column align="left" label="状态" prop="status" width="120" />
         <el-table-column align="left" label="付款人" prop="payer" width="120" />
         <el-table-column align="left" label="备注" prop="remark" width="120" />
+        <el-table-column align="left" label="确认上分" prop="confirmed" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
-            <el-button type="text" icon="edit" size="small" class="table-button" @click="updateIncomeOrderFunc(scope.row)">变更</el-button>
+            <el-button
+              type="text"
+              icon="edit"
+              size="small"
+              class="table-button"
+              @click="updateIncomeOrderFunc(scope.row)"
+            >变更
+            </el-button>
             <el-button type="text" icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -101,6 +116,20 @@
         <el-form-item label="备注:">
           <el-input v-model="formData.remark" clearable placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="确认上分:">
+          <el-select v-model="formData.confirmed" placeholder="请输入" style="width: 100%">
+            <el-option
+              :key="true"
+              label="已确认"
+              :value="true"
+            />
+            <el-option
+              :key="false"
+              label="未确认"
+              :value="false"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -114,7 +143,7 @@
 
 <script>
 export default {
-  name: 'IncomeOrder'
+  name: 'IncomeOrder',
 }
 </script>
 
@@ -125,7 +154,7 @@ import {
   deleteIncomeOrderByIds,
   updateIncomeOrder,
   findIncomeOrder,
-  getIncomeOrderList
+  getIncomeOrderList,
 } from '@/api/dvfpay/incomeOrder'
 
 // 全量引入格式化工具 请按需保留
@@ -142,6 +171,7 @@ const formData = ref({
   status: '',
   payer: '',
   remark: '',
+  confirmed: '',
 })
 
 // =========== 表格控制部分 ===========
@@ -209,7 +239,7 @@ const deleteRow = (row) => {
   ElMessageBox.confirm('确定要删除吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
+    type: 'warning',
   }).then(() => {
     deleteIncomeOrderFunc(row)
   })
@@ -224,19 +254,19 @@ const onDelete = async() => {
   if (multipleSelection.value.length === 0) {
     ElMessage({
       type: 'warning',
-      message: '请选择要删除的数据'
+      message: '请选择要删除的数据',
     })
     return
   }
   multipleSelection.value &&
-        multipleSelection.value.map(item => {
-          ids.push(item.ID)
-        })
+  multipleSelection.value.map(item => {
+    ids.push(item.ID)
+  })
   const res = await deleteIncomeOrderByIds({ ids })
   if (res.code === 0) {
     ElMessage({
       type: 'success',
-      message: '删除成功'
+      message: '删除成功',
     })
     if (tableData.value.length === ids.length && page.value > 1) {
       page.value--
@@ -265,7 +295,7 @@ const deleteIncomeOrderFunc = async(row) => {
   if (res.code === 0) {
     ElMessage({
       type: 'success',
-      message: '删除成功'
+      message: '删除成功',
     })
     if (tableData.value.length === 1 && page.value > 1) {
       page.value--
@@ -289,11 +319,12 @@ const closeDialog = () => {
   formData.value = {
     arrivalTime: new Date(),
     orderId: '',
-    amount: 0,
+    amount: '',
     currency: '',
     status: '',
     payer: '',
     remark: '',
+    confirmed: '',
   }
 }
 // 弹窗确定
@@ -313,7 +344,7 @@ const enterDialog = async() => {
   if (res.code === 0) {
     ElMessage({
       type: 'success',
-      message: '创建/更改成功'
+      message: '创建/更改成功',
     })
     closeDialog()
     getTableData()

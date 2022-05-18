@@ -3,10 +3,10 @@
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item label="代收通道id">
-          <el-input v-model="searchInfo.incomeGatewayId" placeholder="搜索条件"/>
+          <el-input v-model="searchInfo.incomeGatewayId" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item label="商户id">
-          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件"/>
+          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
@@ -36,18 +36,18 @@
       <!--        </el-popover>-->
       <!--      </div>-->
       <el-table
-          ref="multipleTable"
-          style="width: 100%"
-          tooltip-effect="dark"
-          :data="tableData"
-          row-key="ID"
-          @selection-change="handleSelectionChange"
+        ref="multipleTable"
+        style="width: 100%"
+        tooltip-effect="dark"
+        :data="tableData"
+        row-key="ID"
+        @selection-change="handleSelectionChange"
       >
         <!--        <el-table-column type="selection" width="55" />-->
         <!--        <el-table-column align="left" label="日期" width="180">-->
         <!--          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>-->
         <!--        </el-table-column>-->
-        <el-table-column align="left" label="代收通道" prop="incomeGateway.name" width="120"/>
+        <el-table-column align="left" label="代收通道" prop="incomeGateway.name" width="120" />
         <!--        <el-table-column align="left" label="商户" min-width="200">-->
         <!--          <template #default="scope">-->
         <!--            <el-cascader-->
@@ -58,11 +58,12 @@
         <!--            />-->
         <!--          </template>-->
         <!--        </el-table-column>-->
-        <el-table-column align="left" label="手续费" prop="fee" width="120"/>
-        <el-table-column align="left" label="单笔最高" prop="limitMax" width="120"/>
-        <el-table-column align="left" label="单笔最低" prop="limitMin" width="120"/>
-        <el-table-column align="left" label="单日限制" prop="limitDay" width="120"/>
-        <el-table-column align="left" label="总量限制" prop="limitTotal"/>
+        <el-table-column align="left" label="手续费" prop="fee" width="120" />
+        <el-table-column align="left" label="单笔最高" prop="limitMax" width="120" />
+        <el-table-column align="left" label="单笔最低" prop="limitMin" width="120" />
+        <el-table-column align="left" label="单日限制" prop="limitDay" width="120" />
+        <el-table-column align="left" label="总量限制" prop="limitTotal" width="120" />
+        <el-table-column align="left" label="说明" prop="explain" />
         <!--        <el-table-column align="left" label="按钮组">-->
         <!--          <template #default="scope">-->
         <!--            <el-button-->
@@ -79,59 +80,59 @@
       </el-table>
       <div class="gva-pagination">
         <el-pagination
-            layout="total, sizes, prev, pager, next, jumper"
-            :current-page="page"
-            :page-size="pageSize"
-            :page-sizes="[10, 30, 50, 100]"
-            :total="total"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
+          layout="total, sizes, prev, pager, next, jumper"
+          :current-page="page"
+          :page-size="pageSize"
+          :page-sizes="[10, 30, 50, 100]"
+          :total="total"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
         />
       </div>
     </div>
-<!--    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">-->
-<!--      <el-form :model="formData" label-position="right" label-width="80px">-->
-<!--        <el-form-item label="代收通道:">-->
-<!--          <el-cascader-->
-<!--              v-model="formData.incomeGatewayId"-->
-<!--              style="width:100%"-->
-<!--              :options="incomeGatewayOptions"-->
-<!--              :props="{ label:'name',value:'ID' }"-->
-<!--              filterable-->
-<!--          />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="授权商户:">-->
-<!--          <el-cascader-->
-<!--              v-model="formData.merchants"-->
-<!--              style="width:100%"-->
-<!--              :options="merchantOptions"-->
-<!--              :props="{ multiple:true,label:'nickName',value:'ID' }"-->
-<!--              filterable-->
-<!--          />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="手续费:">-->
-<!--          <el-input v-model.number="formData.fee" clearable placeholder="请输入"/>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="单笔最高:">-->
-<!--          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入"/>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="单笔最低:">-->
-<!--          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入"/>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="单日限制:">-->
-<!--          <el-input v-model.number="formData.limitDay" clearable placeholder="请输入"/>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="总量限制:">-->
-<!--          <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入"/>-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-<!--      <template #footer>-->
-<!--        <div class="dialog-footer">-->
-<!--          <el-button size="small" @click="closeDialog">取 消</el-button>-->
-<!--          <el-button size="small" type="primary" @click="enterDialog">确 定</el-button>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </el-dialog>-->
+    <!--    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">-->
+    <!--      <el-form :model="formData" label-position="right" label-width="80px">-->
+    <!--        <el-form-item label="代收通道:">-->
+    <!--          <el-cascader-->
+    <!--              v-model="formData.incomeGatewayId"-->
+    <!--              style="width:100%"-->
+    <!--              :options="incomeGatewayOptions"-->
+    <!--              :props="{ label:'name',value:'ID' }"-->
+    <!--              filterable-->
+    <!--          />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="授权商户:">-->
+    <!--          <el-cascader-->
+    <!--              v-model="formData.merchants"-->
+    <!--              style="width:100%"-->
+    <!--              :options="merchantOptions"-->
+    <!--              :props="{ multiple:true,label:'nickName',value:'ID' }"-->
+    <!--              filterable-->
+    <!--          />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="手续费:">-->
+    <!--          <el-input v-model.number="formData.fee" clearable placeholder="请输入"/>-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="单笔最高:">-->
+    <!--          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入"/>-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="单笔最低:">-->
+    <!--          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入"/>-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="单日限制:">-->
+    <!--          <el-input v-model.number="formData.limitDay" clearable placeholder="请输入"/>-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="总量限制:">-->
+    <!--          <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入"/>-->
+    <!--        </el-form-item>-->
+    <!--      </el-form>-->
+    <!--      <template #footer>-->
+    <!--        <div class="dialog-footer">-->
+    <!--          <el-button size="small" @click="closeDialog">取 消</el-button>-->
+    <!--          <el-button size="small" type="primary" @click="enterDialog">确 定</el-button>-->
+    <!--        </div>-->
+    <!--      </template>-->
+    <!--    </el-dialog>-->
   </div>
 </template>
 

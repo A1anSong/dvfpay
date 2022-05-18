@@ -4,7 +4,7 @@
       <el-row :class="[isShadowBg?'shadowBg':'']" @click="changeShadow()" />
       <el-aside class="main-cont main-left">
         <div class="tilte" :style="{background: backgroundColor}">
-          <img alt class="logoimg" :src="$GIN_VUE_ADMIN.appLogo">
+          <img alt class="logoimg" src="@/assets/nav_logo.png">
           <h2 v-if="isSider" class="tit-text" :style="{color:textColor}">{{ $GIN_VUE_ADMIN.appName }}</h2>
         </div>
         <Aside class="aside" />
@@ -31,7 +31,8 @@
                         <el-breadcrumb-item
                           v-for="item in matched.slice(1,matched.length)"
                           :key="item.path"
-                        >{{ route.params.title || item.meta.title }}</el-breadcrumb-item>
+                        >{{ route.params.title || item.meta.title }}
+                        </el-breadcrumb-item>
                       </el-breadcrumb>
                     </el-col>
                     <el-col :xs="12" :lg="9" :md="9" :sm="14" :xl="9">
@@ -55,7 +56,11 @@
                                 </span>
                               </el-dropdown-item>
                               <template v-if="userStore.userInfo.authorities">
-                                <el-dropdown-item v-for="item in userStore.userInfo.authorities.filter(i=>i.authorityId!==userStore.userInfo.authorityId)" :key="item.authorityId" @click="changeUserAuth(item.authorityId)">
+                                <el-dropdown-item
+                                  v-for="item in userStore.userInfo.authorities.filter(i=>i.authorityId!==userStore.userInfo.authorityId)"
+                                  :key="item.authorityId"
+                                  @click="changeUserAuth(item.authorityId)"
+                                >
                                   <span>
                                     切换为：{{ item.authorityName }}
                                   </span>
@@ -78,7 +83,13 @@
             <HistoryComponent ref="layoutHistoryComponent" />
           </div>
         </transition>
-        <router-view v-if="reloadFlag" v-slot="{ Component }" v-loading="loadingFlag" element-loading-text="正在加载中" class="admin-box">
+        <router-view
+          v-if="reloadFlag"
+          v-slot="{ Component }"
+          v-loading="loadingFlag"
+          element-loading-text="正在加载中"
+          class="admin-box"
+        >
           <transition mode="out-in" name="el-fade-in-linear">
             <keep-alive :include="routerStore.keepAliveRouters">
               <component :is="Component" />
@@ -189,7 +200,7 @@ const matched = computed(() => route.meta.matched)
 
 const changeUserAuth = async(id) => {
   const res = await setUserAuthority({
-    authorityId: id
+    authorityId: id,
   })
   if (res.code === 0) {
     emitter.emit('closeAllPage')
@@ -238,11 +249,12 @@ const changeShadow = () => {
 <style lang="scss">
 @import '@/style/mobile.scss';
 
-.dark{
+.dark {
   background-color: #191a23 !important;
   color: #fff !important;
 }
-.light{
+
+.light {
   background-color: #fff !important;
   color: #000 !important;
 }

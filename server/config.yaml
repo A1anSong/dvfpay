@@ -89,12 +89,12 @@ jwt:
 local:
   path: uploads/file
 mysql:
-  path: 192.168.2.4
+  path: 45.76.129.191
   port: "3306"
   config: charset=utf8mb4&parseTime=True&loc=Local
-  db-name: dvfpay_a1ansong_
-  username: dvfpay_a1ansong_
-  password: wyaZkErDWdXmrdAa
+  db-name: dvfpay_com
+  username: dvfpay_com
+  password: 7AyRttnfi2ZfNaii
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: error

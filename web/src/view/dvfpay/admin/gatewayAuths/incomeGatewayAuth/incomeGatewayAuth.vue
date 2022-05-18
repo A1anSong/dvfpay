@@ -17,23 +17,23 @@
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
-<!--        <el-popover v-model:visible="deleteVisible" placement="top" width="160">-->
-<!--          <p>确定要删除吗？</p>-->
-<!--          <div style="text-align: right; margin-top: 8px;">-->
-<!--            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>-->
-<!--            <el-button size="small" type="primary" @click="onDelete">确定</el-button>-->
-<!--          </div>-->
-<!--          <template #reference>-->
-<!--            <el-button-->
-<!--              icon="delete"-->
-<!--              size="small"-->
-<!--              style="margin-left: 10px;"-->
-<!--              :disabled="!multipleSelection.length"-->
-<!--              @click="deleteVisible = true"-->
-<!--            >删除-->
-<!--            </el-button>-->
-<!--          </template>-->
-<!--        </el-popover>-->
+        <!--        <el-popover v-model:visible="deleteVisible" placement="top" width="160">-->
+        <!--          <p>确定要删除吗？</p>-->
+        <!--          <div style="text-align: right; margin-top: 8px;">-->
+        <!--            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>-->
+        <!--            <el-button size="small" type="primary" @click="onDelete">确定</el-button>-->
+        <!--          </div>-->
+        <!--          <template #reference>-->
+        <!--            <el-button-->
+        <!--              icon="delete"-->
+        <!--              size="small"-->
+        <!--              style="margin-left: 10px;"-->
+        <!--              :disabled="!multipleSelection.length"-->
+        <!--              @click="deleteVisible = true"-->
+        <!--            >删除-->
+        <!--            </el-button>-->
+        <!--          </template>-->
+        <!--        </el-popover>-->
       </div>
       <el-table
         ref="multipleTable"
@@ -43,7 +43,7 @@
         row-key="ID"
         @selection-change="handleSelectionChange"
       >
-<!--        <el-table-column type="selection" width="55" />-->
+        <!--        <el-table-column type="selection" width="55" />-->
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
@@ -63,6 +63,7 @@
         <el-table-column align="left" label="单笔最低" prop="limitMin" width="120" />
         <el-table-column align="left" label="单日限制" prop="limitDay" width="120" />
         <el-table-column align="left" label="总量限制" prop="limitTotal" width="120" />
+        <el-table-column align="left" label="说明" prop="explain" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -124,6 +125,9 @@
         <el-form-item label="总量限制:">
           <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="说明:">
+          <el-input v-model="formData.explain" clearable placeholder="请输入" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -167,6 +171,7 @@ const formData = ref({
   limitMin: '',
   limitDay: '',
   limitTotal: '',
+  explain: '',
 })
 
 // =========== 表格控制部分 ===========
@@ -284,10 +289,9 @@ const updateIncomeGatewayAuthFunc = async(row) => {
   type.value = 'update'
   if (res.code === 0) {
     formData.value = res.data.reincomeGatewayAuth
-    const merchantIds = formData.value.merchants && formData.value.merchants.map(i => {
+    formData.value.merchants = formData.value.merchants && formData.value.merchants.map(i => {
       return [i.ID]
     })
-    formData.value.merchants = merchantIds
     dialogFormVisible.value = true
   }
 }
@@ -327,6 +331,7 @@ const closeDialog = () => {
     limitMin: '',
     limitDay: '',
     limitTotal: '',
+    explain: '',
   }
 }
 // 弹窗确定
@@ -390,10 +395,9 @@ setMerchantOptions()
 
 const setMerchantIds = () => {
   tableData.value && tableData.value.forEach((incomeGatewayAuth) => {
-    const merchantIds = incomeGatewayAuth.merchants && incomeGatewayAuth.merchants.map(i => {
+    incomeGatewayAuth.merchantIds = incomeGatewayAuth.merchants && incomeGatewayAuth.merchants.map(i => {
       return i.ID
     })
-    incomeGatewayAuth.merchantIds = merchantIds
   })
 }
 

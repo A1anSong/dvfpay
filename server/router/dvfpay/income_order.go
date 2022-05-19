@@ -15,13 +15,15 @@ func (s *IncomeOrderRouter) InitIncomeOrderRouter(Router *gin.RouterGroup) {
 	incomeOrderRouterWithoutRecord := Router.Group("incomeOrder")
 	var incomeOrderApi = v1.ApiGroupApp.DvfpayApiGroup.IncomeOrderApi
 	{
-		incomeOrderRouter.POST("createIncomeOrder", incomeOrderApi.CreateIncomeOrder)   // 新建IncomeOrder
-		incomeOrderRouter.DELETE("deleteIncomeOrder", incomeOrderApi.DeleteIncomeOrder) // 删除IncomeOrder
+		incomeOrderRouter.POST("createIncomeOrder", incomeOrderApi.CreateIncomeOrder)             // 新建IncomeOrder
+		incomeOrderRouter.DELETE("deleteIncomeOrder", incomeOrderApi.DeleteIncomeOrder)           // 删除IncomeOrder
 		incomeOrderRouter.DELETE("deleteIncomeOrderByIds", incomeOrderApi.DeleteIncomeOrderByIds) // 批量删除IncomeOrder
-		incomeOrderRouter.PUT("updateIncomeOrder", incomeOrderApi.UpdateIncomeOrder)    // 更新IncomeOrder
+		incomeOrderRouter.PUT("updateIncomeOrder", incomeOrderApi.UpdateIncomeOrder)              // 更新IncomeOrder
 	}
 	{
-		incomeOrderRouterWithoutRecord.GET("findIncomeOrder", incomeOrderApi.FindIncomeOrder)        // 根据ID获取IncomeOrder
-		incomeOrderRouterWithoutRecord.GET("getIncomeOrderList", incomeOrderApi.GetIncomeOrderList)  // 获取IncomeOrder列表
+		incomeOrderRouterWithoutRecord.GET("findIncomeOrder", incomeOrderApi.FindIncomeOrder)       // 根据ID获取IncomeOrder
+		incomeOrderRouterWithoutRecord.GET("getIncomeOrderList", incomeOrderApi.GetIncomeOrderList) // 获取IncomeOrder列表
+		incomeOrderRouterWithoutRecord.GET("getMerchantIncomeOrderList", incomeOrderApi.GetMerchantIncomeOrderList)
+		incomeOrderRouterWithoutRecord.PUT("confirmIncomeOrder", incomeOrderApi.ConfirmIncomeOrder)
 	}
 }

@@ -36,6 +36,7 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) CreateIncomeGatewayAuth(c *gin
 		LimitMin        int    `json:"limitMin"`
 		LimitDay        int    `json:"limitDay"`
 		LimitTotal      int    `json:"limitTotal"`
+		Explain         string `json:"explain"`
 	}
 	var incomeGatewayAuthRequest IncomeGatewayAuthRequest
 	_ = c.ShouldBindJSON(&incomeGatewayAuthRequest)
@@ -59,6 +60,7 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) CreateIncomeGatewayAuth(c *gin
 		LimitMin:   &incomeGatewayAuthRequest.LimitMin,
 		LimitDay:   &incomeGatewayAuthRequest.LimitDay,
 		LimitTotal: &incomeGatewayAuthRequest.LimitTotal,
+		Explain:    incomeGatewayAuthRequest.Explain,
 	}
 	if err := incomeGatewayAuthService.CreateIncomeGatewayAuth(incomeGatewayAuth); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
@@ -132,6 +134,7 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) UpdateIncomeGatewayAuth(c *gin
 		LimitMin        int    `json:"limitMin"`
 		LimitDay        int    `json:"limitDay"`
 		LimitTotal      int    `json:"limitTotal"`
+		Explain         string `json:"explain"`
 	}
 	var incomeGatewayAuthRequest IncomeGatewayAuthRequest
 	_ = c.ShouldBindJSON(&incomeGatewayAuthRequest)
@@ -159,6 +162,7 @@ func (incomeGatewayAuthApi *IncomeGatewayAuthApi) UpdateIncomeGatewayAuth(c *gin
 	incomeGatewayAuth.LimitMin = &incomeGatewayAuthRequest.LimitMin
 	incomeGatewayAuth.LimitDay = &incomeGatewayAuthRequest.LimitDay
 	incomeGatewayAuth.LimitTotal = &incomeGatewayAuthRequest.LimitTotal
+	incomeGatewayAuth.Explain = incomeGatewayAuthRequest.Explain
 	if err := global.GVA_DB.Save(&incomeGatewayAuth).Error; err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

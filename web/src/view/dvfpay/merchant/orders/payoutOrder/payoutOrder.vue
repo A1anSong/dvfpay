@@ -2,11 +2,23 @@
   <div>
     <!--    <div class="gva-search-box">-->
     <!--      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">-->
-    <!--        <el-form-item label="代收通道id">-->
-    <!--          <el-input v-model="searchInfo.payoutGatewayId" placeholder="搜索条件"/>-->
+    <!--        <el-form-item label="订单id">-->
+    <!--          <el-input v-model="searchInfo.orderId" placeholder="搜索条件" />-->
     <!--        </el-form-item>-->
-    <!--        <el-form-item label="商户id">-->
-    <!--          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件"/>-->
+    <!--        <el-form-item label="金额">-->
+    <!--          <el-input v-model="searchInfo.amount" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="币种">-->
+    <!--          <el-input v-model="searchInfo.currency" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="状态">-->
+    <!--          <el-input v-model="searchInfo.status" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="付款人">-->
+    <!--          <el-input v-model="searchInfo.payer" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="备注">-->
+    <!--          <el-input v-model="searchInfo.remark" placeholder="搜索条件" />-->
     <!--        </el-form-item>-->
     <!--        <el-form-item>-->
     <!--          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>-->
@@ -25,11 +37,11 @@
       <!--          </div>-->
       <!--          <template #reference>-->
       <!--            <el-button-->
-      <!--                icon="delete"-->
-      <!--                size="small"-->
-      <!--                style="margin-left: 10px;"-->
-      <!--                :disabled="!multipleSelection.length"-->
-      <!--                @click="deleteVisible = true"-->
+      <!--              icon="delete"-->
+      <!--              size="small"-->
+      <!--              style="margin-left: 10px;"-->
+      <!--              :disabled="!multipleSelection.length"-->
+      <!--              @click="deleteVisible = true"-->
       <!--            >删除-->
       <!--            </el-button>-->
       <!--          </template>-->
@@ -43,39 +55,31 @@
         row-key="ID"
         @selection-change="handleSelectionChange"
       >
-        <!--        <el-table-column type="selection" width="55"/>-->
+        <!--        <el-table-column type="selection" width="55" />-->
         <!--        <el-table-column align="left" label="日期" width="180">-->
         <!--          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>-->
         <!--        </el-table-column>-->
-        <el-table-column align="left" label="代付通道" prop="payoutGateway.name" min-width="120" />
-        <el-table-column align="left" label="币种" prop="payoutGateway.currency" min-width="120" />
-        <el-table-column align="left" label="状态" prop="payoutGateway.status" min-width="120" />
-        <!--        <el-table-column align="left" label="商户" prop="merchantId" min-width="200">-->
-        <!--          <template #default="scope">-->
-        <!--            <el-cascader-->
-        <!--                v-model="scope.row.merchantIds"-->
-        <!--                :options="merchantOptions"-->
-        <!--                collapse-tags-->
-        <!--                :props="{ multiple:true,label:'nickName',value:'ID' }"-->
-        <!--            />-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
-        <el-table-column align="left" label="手续费" min-width="120">
-          <template #default="scope">{{ (scope.row.fee / 100).toFixed(2) + '%' }}</template>
+        <el-table-column align="left" label="到账时间" min-width="180">
+          <template #default="scope">{{ formatDate(scope.row.arrivalTime) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="单笔最高" prop="limitMax" min-width="120" />
-        <el-table-column align="left" label="单笔最低" prop="limitMin" min-width="120" />
-        <el-table-column align="left" label="单日限制" prop="limitDay" min-width="120" />
-        <el-table-column align="left" label="总量限制" prop="limitTotal" min-width="120" />
-        <el-table-column align="left" label="说明" prop="explain" show-overflow-tooltip />
+        <el-table-column align="left" label="订单id" prop="orderId" min-width="120" />
+        <el-table-column align="left" label="金额" min-width="120">
+          <template #default="scope">{{ (scope.row.amount / 100).toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="币种" prop="currency" min-width="120" />
+        <el-table-column align="left" label="状态" prop="status" min-width="120" />
+        <el-table-column align="left" label="付款人" prop="payer" min-width="120" />
+        <el-table-column align="left" label="备注" prop="remark" min-width="120" />
+        <el-table-column align="left" label="商户名称" prop="merchant.nickName" min-width="120" />
+        <el-table-column align="left" label="通道名称" prop="payoutGatewayAuth.payoutGateway.name" min-width="120" />
         <!--        <el-table-column align="left" label="按钮组">-->
         <!--          <template #default="scope">-->
         <!--            <el-button-->
-        <!--                type="text"-->
-        <!--                icon="edit"-->
-        <!--                size="small"-->
-        <!--                class="table-button"-->
-        <!--                @click="updatePayoutGatewayAuthFunc(scope.row)"-->
+        <!--              type="text"-->
+        <!--              icon="edit"-->
+        <!--              size="small"-->
+        <!--              class="table-button"-->
+        <!--              @click="updatePayoutOrderFunc(scope.row)"-->
         <!--            >变更-->
         <!--            </el-button>-->
         <!--            <el-button type="text" icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>-->
@@ -96,38 +100,26 @@
     </div>
     <!--    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">-->
     <!--      <el-form :model="formData" label-position="right" label-width="80px">-->
-    <!--        <el-form-item label="代付通道:">-->
-    <!--          <el-cascader-->
-    <!--              v-model="formData.payoutGatewayId"-->
-    <!--              style="width:100%"-->
-    <!--              :options="payoutGatewayOptions"-->
-    <!--              :props="{ label:'name',value:'ID' }"-->
-    <!--              filterable-->
-    <!--          />-->
+    <!--        <el-form-item label="到账时间:">-->
+    <!--          <el-date-picker v-model="formData.arrivalTime" type="date" style="width:100%" placeholder="选择日期" clearable />-->
     <!--        </el-form-item>-->
-    <!--        <el-form-item label="授权商户:">-->
-    <!--          <el-cascader-->
-    <!--              v-model="formData.merchants"-->
-    <!--              style="width:100%"-->
-    <!--              :options="merchantOptions"-->
-    <!--              :props="{ multiple:true,label:'nickName',value:'ID' }"-->
-    <!--              filterable-->
-    <!--          />-->
+    <!--        <el-form-item label="订单id:">-->
+    <!--          <el-input v-model="formData.orderId" clearable placeholder="请输入" />-->
     <!--        </el-form-item>-->
-    <!--        <el-form-item label="手续费:">-->
-    <!--          <el-input v-model.number="formData.fee" clearable placeholder="请输入"/>-->
+    <!--        <el-form-item label="金额:">-->
+    <!--          <el-input v-model.number="formData.amount" clearable placeholder="请输入" />-->
     <!--        </el-form-item>-->
-    <!--        <el-form-item label="单笔最高:">-->
-    <!--          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入"/>-->
+    <!--        <el-form-item label="币种:">-->
+    <!--          <el-input v-model="formData.currency" clearable placeholder="请输入" />-->
     <!--        </el-form-item>-->
-    <!--        <el-form-item label="单笔最低:">-->
-    <!--          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入"/>-->
+    <!--        <el-form-item label="状态:">-->
+    <!--          <el-input v-model="formData.status" clearable placeholder="请输入" />-->
     <!--        </el-form-item>-->
-    <!--        <el-form-item label="单日限制:">-->
-    <!--          <el-input v-model.number="formData.limitDay" clearable placeholder="请输入"/>-->
+    <!--        <el-form-item label="付款人:">-->
+    <!--          <el-input v-model="formData.payer" clearable placeholder="请输入" />-->
     <!--        </el-form-item>-->
-    <!--        <el-form-item label="总量限制:">-->
-    <!--          <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入"/>-->
+    <!--        <el-form-item label="备注:">-->
+    <!--          <el-input v-model="formData.remark" clearable placeholder="请输入" />-->
     <!--        </el-form-item>-->
     <!--      </el-form>-->
     <!--      <template #footer>-->
@@ -142,34 +134,35 @@
 
 <script>
 export default {
-  name: 'PayoutGatewayAuth',
+  name: 'PayoutOrder',
 }
 </script>
 
 <script setup>
 import {
-  // createPayoutGatewayAuth,
-  // deletePayoutGatewayAuth,
-  // deletePayoutGatewayAuthByIds,
-  // updatePayoutGatewayAuth,
-  // findPayoutGatewayAuth,
-  getMerchantPayoutGatewayAuthList,
-} from '@/api/dvfpay/payoutGatewayAuth'
+  // createPayoutOrder,
+  // deletePayoutOrder,
+  // deletePayoutOrderByIds,
+  // updatePayoutOrder,
+  // findPayoutOrder,
+  // getPayoutOrderList,
+  getMerchantPayoutOrderList,
+} from '@/api/dvfpay/payoutOrder'
 
 // 全量引入格式化工具 请按需保留
-// import { formatDate } from '@/utils/format'
+import { formatDate } from '@/utils/format'
 // import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 // const formData = ref({
-//   payoutGatewayId: '',
-//   merchantId: [],
-//   fee: '',
-//   limitMax: '',
-//   limitMin: '',
-//   limitDay: '',
-//   limitTotal: '',
+//   arrivalTime: new Date(),
+//   orderId: '',
+//   amount: 0,
+//   currency: '',
+//   status: '',
+//   payer: '',
+//   remark: '',
 // })
 
 // =========== 表格控制部分 ===========
@@ -205,10 +198,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getMerchantPayoutGatewayAuthList({
-    page: page.value,
-    pageSize: pageSize.value, ...searchInfo.value,
-  })
+  const table = await getMerchantPayoutOrderList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -242,7 +232,7 @@ const handleSelectionChange = (val) => {
 //     cancelButtonText: '取消',
 //     type: 'warning',
 //   }).then(() => {
-//     deletePayoutGatewayAuthFunc(row)
+//     deletePayoutOrderFunc(row)
 //   })
 // }
 
@@ -263,7 +253,7 @@ const handleSelectionChange = (val) => {
 //   multipleSelection.value.map(item => {
 //     ids.push(item.ID)
 //   })
-//   const res = await deletePayoutGatewayAuthByIds({ ids })
+//   const res = await deletePayoutOrderByIds({ ids })
 //   if (res.code === 0) {
 //     ElMessage({
 //       type: 'success',
@@ -281,22 +271,18 @@ const handleSelectionChange = (val) => {
 // const type = ref('')
 
 // 更新行
-// const updatePayoutGatewayAuthFunc = async(row) => {
-//   const res = await findPayoutGatewayAuth({ ID: row.ID })
+// const updatePayoutOrderFunc = async(row) => {
+//   const res = await findPayoutOrder({ ID: row.ID })
 //   type.value = 'update'
 //   if (res.code === 0) {
-//     formData.value = res.data.repayoutGatewayAuth
-//     const merchantIds = formData.value.merchants && formData.value.merchants.map(i => {
-//       return [i.ID]
-//     })
-//     formData.value.merchants = merchantIds
+//     formData.value = res.data.repayoutOrder
 //     dialogFormVisible.value = true
 //   }
 // }
 
 // 删除行
-// const deletePayoutGatewayAuthFunc = async(row) => {
-//   const res = await deletePayoutGatewayAuth({ ID: row.ID })
+// const deletePayoutOrderFunc = async(row) => {
+//   const res = await deletePayoutOrder({ ID: row.ID })
 //   if (res.code === 0) {
 //     ElMessage({
 //       type: 'success',
@@ -322,31 +308,27 @@ const handleSelectionChange = (val) => {
 // const closeDialog = () => {
 //   dialogFormVisible.value = false
 //   formData.value = {
-//     payoutGatewayId: '',
-//     merchantId: [],
-//     fee: '',
-//     limitMax: '',
-//     limitMin: '',
-//     limitDay: '',
-//     limitTotal: '',
+//     arrivalTime: new Date(),
+//     orderId: '',
+//     amount: 0,
+//     currency: '',
+//     status: '',
+//     payer: '',
+//     remark: '',
 //   }
 // }
 // 弹窗确定
 // const enterDialog = async() => {
-//   formData.value.payoutGatewayId = formData.value.payoutGatewayId[0]
-//   formData.value.merchants.forEach((item, index, arr) => {
-//     arr[index] = arr[index][0]
-//   })
 //   let res
 //   switch (type.value) {
 //     case 'create':
-//       res = await createPayoutGatewayAuth(formData.value)
+//       res = await createPayoutOrder(formData.value)
 //       break
 //     case 'update':
-//       res = await updatePayoutGatewayAuth(formData.value)
+//       res = await updatePayoutOrder(formData.value)
 //       break
 //     default:
-//       res = await createPayoutGatewayAuth(formData.value)
+//       res = await createPayoutOrder(formData.value)
 //       break
 //   }
 //   if (res.code === 0) {
@@ -358,7 +340,6 @@ const handleSelectionChange = (val) => {
 //     getTableData()
 //   }
 // }
-
 </script>
 
 <style>

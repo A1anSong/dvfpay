@@ -2,20 +2,20 @@ package dvfpay
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
+	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type IncomeOrderApi struct {
 }
 
 var incomeOrderService = service.ServiceGroupApp.DvfpayServiceGroup.IncomeOrderService
-
 
 // CreateIncomeOrder 创建IncomeOrder
 // @Tags IncomeOrder
@@ -30,7 +30,7 @@ func (incomeOrderApi *IncomeOrderApi) CreateIncomeOrder(c *gin.Context) {
 	var incomeOrder dvfpay.IncomeOrder
 	_ = c.ShouldBindJSON(&incomeOrder)
 	if err := incomeOrderService.CreateIncomeOrder(incomeOrder); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -50,7 +50,7 @@ func (incomeOrderApi *IncomeOrderApi) DeleteIncomeOrder(c *gin.Context) {
 	var incomeOrder dvfpay.IncomeOrder
 	_ = c.ShouldBindJSON(&incomeOrder)
 	if err := incomeOrderService.DeleteIncomeOrder(incomeOrder); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -68,9 +68,9 @@ func (incomeOrderApi *IncomeOrderApi) DeleteIncomeOrder(c *gin.Context) {
 // @Router /incomeOrder/deleteIncomeOrderByIds [delete]
 func (incomeOrderApi *IncomeOrderApi) DeleteIncomeOrderByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := incomeOrderService.DeleteIncomeOrderByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -90,7 +90,7 @@ func (incomeOrderApi *IncomeOrderApi) UpdateIncomeOrder(c *gin.Context) {
 	var incomeOrder dvfpay.IncomeOrder
 	_ = c.ShouldBindJSON(&incomeOrder)
 	if err := incomeOrderService.UpdateIncomeOrder(incomeOrder); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -110,7 +110,7 @@ func (incomeOrderApi *IncomeOrderApi) FindIncomeOrder(c *gin.Context) {
 	var incomeOrder dvfpay.IncomeOrder
 	_ = c.ShouldBindQuery(&incomeOrder)
 	if err, reincomeOrder := incomeOrderService.GetIncomeOrder(incomeOrder.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"reincomeOrder": reincomeOrder}, c)
@@ -130,14 +130,42 @@ func (incomeOrderApi *IncomeOrderApi) GetIncomeOrderList(c *gin.Context) {
 	var pageInfo dvfpayReq.IncomeOrderSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := incomeOrderService.GetIncomeOrderInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+func (incomeOrderApi *IncomeOrderApi) GetMerchantIncomeOrderList(c *gin.Context) {
+	var pageInfo dvfpayReq.IncomeOrderSearch
+	_ = c.ShouldBindQuery(&pageInfo)
+	merchantID := utils.GetUserID(c)
+	if err, list, total := incomeOrderService.GetMerchantIncomeOrderInfoList(pageInfo, merchantID); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+func (incomeOrderApi *IncomeOrderApi) ConfirmIncomeOrder(c *gin.Context) {
+	var incomeOrder dvfpay.IncomeOrder
+	_ = c.ShouldBindJSON(&incomeOrder)
+	if err := incomeOrderService.ConfirmIncomeOrder(incomeOrder); err != nil {
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		response.FailWithMessage("删除失败", c)
+	} else {
+		response.OkWithMessage("删除成功", c)
+	}
 }

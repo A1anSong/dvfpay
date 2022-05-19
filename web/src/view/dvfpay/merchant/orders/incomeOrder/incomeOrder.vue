@@ -73,7 +73,10 @@
         <el-table-column align="left" label="商户名称" prop="merchant.nickName" min-width="120" />
         <el-table-column align="left" label="通道名称" prop="incomeGatewayAuth.incomeGateway.name" min-width="120" />
         <el-table-column align="left" label="确认上分" min-width="120">
-          <template #default="scope">{{ scope.row.confirmed ? '是' : '否' }}</template>
+          <template #default="scope">
+            <span v-if="scope.row.confirmed">是</span>
+            <el-button v-else type="text" icon="check" size="small" @click="confirmRow(scope.row)">确认</el-button>
+          </template>
         </el-table-column>
         <!--        <el-table-column align="left" label="按钮组">-->
         <!--          <template #default="scope">-->
@@ -157,17 +160,19 @@ export default {
 
 <script setup>
 import {
+  confirmIncomeOrder,
   // createIncomeOrder,
   // deleteIncomeOrder,
   // deleteIncomeOrderByIds,
   // updateIncomeOrder,
   // findIncomeOrder,
-  getIncomeOrderList,
+  // getIncomeOrderList,
+  getMerchantIncomeOrderList,
 } from '@/api/dvfpay/incomeOrder'
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
-// import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
@@ -215,7 +220,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getIncomeOrderList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getMerchantIncomeOrderList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -358,6 +363,27 @@ const handleSelectionChange = (val) => {
 //     getTableData()
 //   }
 // }
+
+const confirmRow = (row) => {
+  ElMessageBox.confirm('确认上分吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    confirmIncomeOrderFunc(row)
+  })
+}
+
+const confirmIncomeOrderFunc = async(row) => {
+  const res = await confirmIncomeOrder({ ID: row.ID })
+  if (res.code === 0) {
+    ElMessage({
+      type: 'success',
+      message: '确认成功',
+    })
+    getTableData()
+  }
+}
 </script>
 
 <style>

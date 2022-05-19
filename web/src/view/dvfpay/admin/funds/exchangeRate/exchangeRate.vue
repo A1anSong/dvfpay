@@ -1,36 +1,36 @@
 <template>
   <div>
-    <div class="gva-search-box">
-      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="名称">
-          <el-input v-model="searchInfo.name" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item>
-          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
-          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <!--    <div class="gva-search-box">-->
+    <!--      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">-->
+    <!--        <el-form-item label="名称">-->
+    <!--          <el-input v-model="searchInfo.name" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item>-->
+    <!--          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>-->
+    <!--          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>-->
+    <!--        </el-form-item>-->
+    <!--      </el-form>-->
+    <!--    </div>-->
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
-        <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-          <p>确定要删除吗？</p>
-          <div style="text-align: right; margin-top: 8px;">
-            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>
-            <el-button size="small" type="primary" @click="onDelete">确定</el-button>
-          </div>
-          <template #reference>
-            <el-button
-              icon="delete"
-              size="small"
-              style="margin-left: 10px;"
-              :disabled="!multipleSelection.length"
-              @click="deleteVisible = true"
-            >删除
-            </el-button>
-          </template>
-        </el-popover>
+        <!--        <el-popover v-model:visible="deleteVisible" placement="top" width="160">-->
+        <!--          <p>确定要删除吗？</p>-->
+        <!--          <div style="text-align: right; margin-top: 8px;">-->
+        <!--            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>-->
+        <!--            <el-button size="small" type="primary" @click="onDelete">确定</el-button>-->
+        <!--          </div>-->
+        <!--          <template #reference>-->
+        <!--            <el-button-->
+        <!--              icon="delete"-->
+        <!--              size="small"-->
+        <!--              style="margin-left: 10px;"-->
+        <!--              :disabled="!multipleSelection.length"-->
+        <!--              @click="deleteVisible = true"-->
+        <!--            >删除-->
+        <!--            </el-button>-->
+        <!--          </template>-->
+        <!--        </el-popover>-->
       </div>
       <el-table
         ref="multipleTable"
@@ -40,12 +40,14 @@
         row-key="ID"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="日期" width="180">
-          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
+        <!--        <el-table-column type="selection" width="55" />-->
+        <!--        <el-table-column align="left" label="日期" width="180">-->
+        <!--          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>-->
+        <!--        </el-table-column>-->
+        <el-table-column align="left" label="名称" prop="name" min-width="120" />
+        <el-table-column align="left" label="汇率值" min-width="120">
+          <template #default="scope">{{ (scope.row.rate / 10000).toFixed(4) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="名称" prop="name" width="120" />
-        <el-table-column align="left" label="汇率值" prop="rate" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -77,7 +79,7 @@
         <el-form-item label="名称:">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="汇率值:">
+        <el-form-item label="汇率值(‱):">
           <el-input v-model.number="formData.rate" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
@@ -101,21 +103,21 @@ export default {
 import {
   createExchangeRate,
   deleteExchangeRate,
-  deleteExchangeRateByIds,
+  // deleteExchangeRateByIds,
   updateExchangeRate,
   findExchangeRate,
   getExchangeRateList,
 } from '@/api/dvfpay/exchangeRate'
 
 // 全量引入格式化工具 请按需保留
-import { formatDate } from '@/utils/format'
+// import { formatDate } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
   name: '',
-  rate: 0,
+  rate: '',
 })
 
 // =========== 表格控制部分 ===========
@@ -126,16 +128,16 @@ const tableData = ref([])
 const searchInfo = ref({})
 
 // 重置
-const onReset = () => {
-  searchInfo.value = {}
-}
+// const onReset = () => {
+//   searchInfo.value = {}
+// }
 
 // 搜索
-const onSubmit = () => {
-  page.value = 1
-  pageSize.value = 10
-  getTableData()
-}
+// const onSubmit = () => {
+//   page.value = 1
+//   pageSize.value = 10
+//   getTableData()
+// }
 
 // 分页
 const handleSizeChange = (val) => {
@@ -190,35 +192,35 @@ const deleteRow = (row) => {
 }
 
 // 批量删除控制标记
-const deleteVisible = ref(false)
+// const deleteVisible = ref(false)
 
 // 多选删除
-const onDelete = async() => {
-  const ids = []
-  if (multipleSelection.value.length === 0) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择要删除的数据',
-    })
-    return
-  }
-  multipleSelection.value &&
-  multipleSelection.value.map(item => {
-    ids.push(item.ID)
-  })
-  const res = await deleteExchangeRateByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功',
-    })
-    if (tableData.value.length === ids.length && page.value > 1) {
-      page.value--
-    }
-    deleteVisible.value = false
-    getTableData()
-  }
-}
+// const onDelete = async() => {
+//   const ids = []
+//   if (multipleSelection.value.length === 0) {
+//     ElMessage({
+//       type: 'warning',
+//       message: '请选择要删除的数据',
+//     })
+//     return
+//   }
+//   multipleSelection.value &&
+//   multipleSelection.value.map(item => {
+//     ids.push(item.ID)
+//   })
+//   const res = await deleteExchangeRateByIds({ ids })
+//   if (res.code === 0) {
+//     ElMessage({
+//       type: 'success',
+//       message: '删除成功',
+//     })
+//     if (tableData.value.length === ids.length && page.value > 1) {
+//       page.value--
+//     }
+//     deleteVisible.value = false
+//     getTableData()
+//   }
+// }
 
 // 行为控制标记（弹窗内部需要增还是改）
 const type = ref('')
@@ -261,9 +263,8 @@ const openDialog = () => {
 const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
-    from: '',
-    to: '',
-    rate: 0,
+    name: '',
+    rate: '',
   }
 }
 // 弹窗确定

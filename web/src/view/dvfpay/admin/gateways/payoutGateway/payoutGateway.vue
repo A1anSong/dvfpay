@@ -1,68 +1,71 @@
 <template>
   <div>
-    <div class="gva-search-box">
-      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="名称">
-          <el-input v-model="searchInfo.name" placeholder="搜索条件"/>
-        </el-form-item>
-        <el-form-item label="参数">
-          <el-input v-model="searchInfo.parameter" placeholder="搜索条件"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
-          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <!--    <div class="gva-search-box">-->
+    <!--      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">-->
+    <!--        <el-form-item label="名称">-->
+    <!--          <el-input v-model="searchInfo.name" placeholder="搜索条件"/>-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="参数">-->
+    <!--          <el-input v-model="searchInfo.parameter" placeholder="搜索条件"/>-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item>-->
+    <!--          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>-->
+    <!--          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>-->
+    <!--        </el-form-item>-->
+    <!--      </el-form>-->
+    <!--    </div>-->
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
-        <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-          <p>确定要删除吗？</p>
-          <div style="text-align: right; margin-top: 8px;">
-            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>
-            <el-button size="small" type="primary" @click="onDelete">确定</el-button>
-          </div>
-          <template #reference>
-            <el-button
-                icon="delete"
-                size="small"
-                style="margin-left: 10px;"
-                :disabled="!multipleSelection.length"
-                @click="deleteVisible = true"
-            >删除
-            </el-button>
-          </template>
-        </el-popover>
+        <!--        <el-popover v-model:visible="deleteVisible" placement="top" width="160">-->
+        <!--          <p>确定要删除吗？</p>-->
+        <!--          <div style="text-align: right; margin-top: 8px;">-->
+        <!--            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>-->
+        <!--            <el-button size="small" type="primary" @click="onDelete">确定</el-button>-->
+        <!--          </div>-->
+        <!--          <template #reference>-->
+        <!--            <el-button-->
+        <!--                icon="delete"-->
+        <!--                size="small"-->
+        <!--                style="margin-left: 10px;"-->
+        <!--                :disabled="!multipleSelection.length"-->
+        <!--                @click="deleteVisible = true"-->
+        <!--            >删除-->
+        <!--            </el-button>-->
+        <!--          </template>-->
+        <!--        </el-popover>-->
       </div>
       <el-table
-          ref="multipleTable"
-          style="width: 100%"
-          tooltip-effect="dark"
-          :data="tableData"
-          row-key="ID"
-          @selection-change="handleSelectionChange"
+        ref="multipleTable"
+        style="width: 100%"
+        tooltip-effect="dark"
+        :data="tableData"
+        row-key="ID"
+        @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55"/>
-        <el-table-column align="left" label="日期" width="180">
-          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
+        <!--        <el-table-column type="selection" width="55"/>-->
+        <!--        <el-table-column align="left" label="日期" width="180">-->
+        <!--          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>-->
+        <!--        </el-table-column>-->
+        <el-table-column align="left" label="名称" prop="name" min-width="120" />
+        <el-table-column align="left" label="类型" prop="type" min-width="120" />
+        <el-table-column align="left" label="币种" prop="currency" min-width="120" />
+        <el-table-column align="left" label="参数" prop="parameter" min-width="120" show-overflow-tooltip />
+        <el-table-column align="left" label="状态" prop="status" min-width="120" />
+        <el-table-column align="left" label="最大限额" prop="limitMax" min-width="120" />
+        <el-table-column align="left" label="最小限额" prop="limitMin" min-width="120" />
+        <el-table-column align="left" label="手续费" min-width="120">
+          <template #default="scope">{{ (scope.row.fee / 100).toFixed(2) + '%' }}</template>
         </el-table-column>
-        <el-table-column align="left" label="名称" prop="name" width="120"/>
-        <el-table-column align="left" label="类型" prop="type" width="120"/>
-        <el-table-column align="left" label="币种" prop="currency" width="120" />
-        <el-table-column align="left" label="参数" prop="parameter" width="120"/>
-        <el-table-column align="left" label="状态" prop="status" width="120"/>
-        <el-table-column align="left" label="最大限额" prop="limitMax" width="120"/>
-        <el-table-column align="left" label="最小限额" prop="limitMin" width="120"/>
-        <el-table-column align="left" label="手续费" prop="fee" width="120"/>
+        <el-table-column align="left" label="备注" prop="remark" min-width="120" show-overflow-tooltip />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
-                type="text"
-                icon="edit"
-                size="small"
-                class="table-button"
-                @click="updatePayoutGatewayFunc(scope.row)"
+              type="text"
+              icon="edit"
+              size="small"
+              class="table-button"
+              @click="updatePayoutGatewayFunc(scope.row)"
             >变更
             </el-button>
             <el-button type="text" icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
@@ -71,41 +74,55 @@
       </el-table>
       <div class="gva-pagination">
         <el-pagination
-            layout="total, sizes, prev, pager, next, jumper"
-            :current-page="page"
-            :page-size="pageSize"
-            :page-sizes="[10, 30, 50, 100]"
-            :total="total"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
+          layout="total, sizes, prev, pager, next, jumper"
+          :current-page="page"
+          :page-size="pageSize"
+          :page-sizes="[10, 30, 50, 100]"
+          :total="total"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
         />
       </div>
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" label-width="80px">
         <el-form-item label="名称:">
-          <el-input v-model="formData.name" clearable placeholder="请输入"/>
+          <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="类型:">
-          <el-input v-model="formData.type" clearable placeholder="请输入"/>
+          <el-select v-model="formData.type" placeholder="请选择" style="width: 100%">
+            <el-option
+              key="bank"
+              label="Bank"
+              value="bank"
+            />
+            <el-option
+              key="gateway"
+              label="Gateway"
+              value="gateway"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="币种:">
-          <el-input v-model="formData.currency" clearable placeholder="请输入"/>
+          <el-input v-model="formData.currency" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="参数:">
-          <el-input v-model="formData.parameter" clearable placeholder="请输入"/>
+          <el-input v-model="formData.parameter" clearable placeholder="请输入" type="textarea" />
         </el-form-item>
         <el-form-item label="状态:">
-          <el-input v-model="formData.status" clearable placeholder="请输入"/>
+          <el-input v-model="formData.status" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="最大限额:">
-          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入"/>
+          <el-input v-model.number="formData.limitMax" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="最小限额:">
-          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入"/>
+          <el-input v-model.number="formData.limitMin" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="手续费:">
-          <el-input v-model.number="formData.fee" clearable placeholder="请输入"/>
+        <el-form-item label="手续费(‱):">
+          <el-input v-model.number="formData.fee" clearable placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="备注:">
+          <el-input v-model="formData.remark" clearable placeholder="请输入" type="textarea" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -128,14 +145,14 @@ export default {
 import {
   createPayoutGateway,
   deletePayoutGateway,
-  deletePayoutGatewayByIds,
+  // deletePayoutGatewayByIds,
   updatePayoutGateway,
   findPayoutGateway,
   getPayoutGatewayList,
 } from '@/api/dvfpay/payoutGateway'
 
 // 全量引入格式化工具 请按需保留
-import { formatDate } from '@/utils/format'
+// import { formatDate } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 
@@ -149,6 +166,7 @@ const formData = ref({
   limitMax: '',
   limitMin: '',
   fee: '',
+  remark: '',
 })
 
 // =========== 表格控制部分 ===========
@@ -159,16 +177,16 @@ const tableData = ref([])
 const searchInfo = ref({})
 
 // 重置
-const onReset = () => {
-  searchInfo.value = {}
-}
+// const onReset = () => {
+//   searchInfo.value = {}
+// }
 
 // 搜索
-const onSubmit = () => {
-  page.value = 1
-  pageSize.value = 10
-  getTableData()
-}
+// const onSubmit = () => {
+//   page.value = 1
+//   pageSize.value = 10
+//   getTableData()
+// }
 
 // 分页
 const handleSizeChange = (val) => {
@@ -223,35 +241,35 @@ const deleteRow = (row) => {
 }
 
 // 批量删除控制标记
-const deleteVisible = ref(false)
+// const deleteVisible = ref(false)
 
 // 多选删除
-const onDelete = async() => {
-  const ids = []
-  if (multipleSelection.value.length === 0) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择要删除的数据',
-    })
-    return
-  }
-  multipleSelection.value &&
-  multipleSelection.value.map(item => {
-    ids.push(item.ID)
-  })
-  const res = await deletePayoutGatewayByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功',
-    })
-    if (tableData.value.length === ids.length && page.value > 1) {
-      page.value--
-    }
-    deleteVisible.value = false
-    getTableData()
-  }
-}
+// const onDelete = async() => {
+//   const ids = []
+//   if (multipleSelection.value.length === 0) {
+//     ElMessage({
+//       type: 'warning',
+//       message: '请选择要删除的数据',
+//     })
+//     return
+//   }
+//   multipleSelection.value &&
+//   multipleSelection.value.map(item => {
+//     ids.push(item.ID)
+//   })
+//   const res = await deletePayoutGatewayByIds({ ids })
+//   if (res.code === 0) {
+//     ElMessage({
+//       type: 'success',
+//       message: '删除成功',
+//     })
+//     if (tableData.value.length === ids.length && page.value > 1) {
+//       page.value--
+//     }
+//     deleteVisible.value = false
+//     getTableData()
+//   }
+// }
 
 // 行为控制标记（弹窗内部需要增还是改）
 const type = ref('')
@@ -295,7 +313,14 @@ const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
     name: '',
+    type: '',
+    currency: '',
     parameter: '',
+    status: '',
+    limitMax: '',
+    limitMin: '',
+    fee: '',
+    remark: '',
   }
 }
 // 弹窗确定

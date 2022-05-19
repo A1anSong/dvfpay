@@ -95,3 +95,11 @@ export const getPayoutOrderList = (params) => {
     params
   })
 }
+
+export const getMerchantPayoutOrderList = (params) => {
+  return service({
+    url: '/payoutOrder/getMerchantPayoutOrderList',
+    method: 'get',
+    params
+  })
+}

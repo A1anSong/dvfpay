@@ -1,19 +1,19 @@
 <template>
   <div>
-    <div class="gva-search-box">
-      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="代收通道id">
-          <el-input v-model="searchInfo.incomeGatewayId" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item label="商户id">
-          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item>
-          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
-          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <!--    <div class="gva-search-box">-->
+    <!--      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">-->
+    <!--        <el-form-item label="代收通道id">-->
+    <!--          <el-input v-model="searchInfo.incomeGatewayId" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="商户id">-->
+    <!--          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item>-->
+    <!--          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>-->
+    <!--          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>-->
+    <!--        </el-form-item>-->
+    <!--      </el-form>-->
+    <!--    </div>-->
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
@@ -44,10 +44,12 @@
         @selection-change="handleSelectionChange"
       >
         <!--        <el-table-column type="selection" width="55" />-->
-        <el-table-column align="left" label="日期" width="180">
-          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
-        </el-table-column>
-        <el-table-column align="left" label="代收通道" prop="incomeGateway.name" width="120" />
+        <!--        <el-table-column align="left" label="日期" width="180">-->
+        <!--          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>-->
+        <!--        </el-table-column>-->
+        <el-table-column align="left" label="代收通道" prop="incomeGateway.name" min-width="120" />
+        <el-table-column align="left" label="币种" prop="incomeGateway.currency" min-width="120" />
+        <el-table-column align="left" label="状态" prop="incomeGateway.status" min-width="120" />
         <el-table-column align="left" label="商户" min-width="200">
           <template #default="scope">
             <el-cascader
@@ -58,12 +60,14 @@
             />
           </template>
         </el-table-column>
-        <el-table-column align="left" label="手续费" prop="fee" width="120" />
-        <el-table-column align="left" label="单笔最高" prop="limitMax" width="120" />
-        <el-table-column align="left" label="单笔最低" prop="limitMin" width="120" />
-        <el-table-column align="left" label="单日限制" prop="limitDay" width="120" />
-        <el-table-column align="left" label="总量限制" prop="limitTotal" width="120" />
-        <el-table-column align="left" label="说明" prop="explain" width="120" />
+        <el-table-column align="left" label="手续费" width="120">
+          <template #default="scope">{{ (scope.row.fee / 100).toFixed(2) + '%' }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="单笔最高" prop="limitMax" min-width="120" />
+        <el-table-column align="left" label="单笔最低" prop="limitMin" min-width="120" />
+        <el-table-column align="left" label="单日限制" prop="limitDay" min-width="120" />
+        <el-table-column align="left" label="总量限制" prop="limitTotal" min-width="120" />
+        <el-table-column align="left" label="说明" prop="explain" min-width="120" show-overflow-tooltip />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -110,7 +114,7 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="手续费:">
+        <el-form-item label="手续费(‱):">
           <el-input v-model.number="formData.fee" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="单笔最高:">
@@ -126,7 +130,7 @@
           <el-input v-model.number="formData.limitTotal" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="说明:">
-          <el-input v-model="formData.explain" clearable placeholder="请输入" />
+          <el-input v-model="formData.explain" clearable placeholder="请输入" type="textarea" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -156,7 +160,7 @@ import {
 } from '@/api/dvfpay/incomeGatewayAuth'
 
 // 全量引入格式化工具 请按需保留
-import { formatDate } from '@/utils/format'
+// import { formatDate } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, watch } from 'vue'
 import { getIncomeGatewayList } from '@/api/dvfpay/incomeGateway'
@@ -182,16 +186,16 @@ const tableData = ref([])
 const searchInfo = ref({})
 
 // 重置
-const onReset = () => {
-  searchInfo.value = {}
-}
+// const onReset = () => {
+//   searchInfo.value = {}
+// }
 
 // 搜索
-const onSubmit = () => {
-  page.value = 1
-  pageSize.value = 10
-  getTableData()
-}
+// const onSubmit = () => {
+//   page.value = 1
+//   pageSize.value = 10
+//   getTableData()
+// }
 
 // 分页
 const handleSizeChange = (val) => {
@@ -336,19 +340,20 @@ const closeDialog = () => {
 }
 // 弹窗确定
 const enterDialog = async() => {
-  formData.value.incomeGatewayId = formData.value.incomeGatewayId[0]
   formData.value.merchants.forEach((item, index, arr) => {
     arr[index] = arr[index][0]
   })
   let res
   switch (type.value) {
     case 'create':
+      formData.value.incomeGatewayId = formData.value.incomeGatewayId[0]
       res = await createIncomeGatewayAuth(formData.value)
       break
     case 'update':
       res = await updateIncomeGatewayAuth(formData.value)
       break
     default:
+      formData.value.incomeGatewayId = formData.value.incomeGatewayId[0]
       res = await createIncomeGatewayAuth(formData.value)
       break
   }

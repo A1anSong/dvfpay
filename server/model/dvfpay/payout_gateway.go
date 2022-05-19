@@ -17,6 +17,7 @@ type PayoutGateway struct {
 	LimitMax  *int   `json:"limitMax" form:"limitMax" gorm:"column:limit_max;comment:;"`
 	LimitMin  *int   `json:"limitMin" form:"limitMin" gorm:"column:limit_min;comment:;"`
 	Fee       *int   `json:"fee" form:"fee" gorm:"column:fee;comment:;"`
+	Remark    string `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
 }
 
 // TableName PayoutGateway 表名

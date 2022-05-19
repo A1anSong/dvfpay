@@ -36,6 +36,7 @@ func (payoutGatewayAuthApi *PayoutGatewayAuthApi) CreatePayoutGatewayAuth(c *gin
 		LimitMin        int    `json:"limitMin"`
 		LimitDay        int    `json:"limitDay"`
 		LimitTotal      int    `json:"limitTotal"`
+		Explain         string `json:"explain"`
 	}
 	var payoutGatewayAuthRequest PayoutGatewayAuthRequest
 	_ = c.ShouldBindJSON(&payoutGatewayAuthRequest)
@@ -59,6 +60,7 @@ func (payoutGatewayAuthApi *PayoutGatewayAuthApi) CreatePayoutGatewayAuth(c *gin
 		LimitMin:   &payoutGatewayAuthRequest.LimitMin,
 		LimitDay:   &payoutGatewayAuthRequest.LimitDay,
 		LimitTotal: &payoutGatewayAuthRequest.LimitTotal,
+		Explain:    payoutGatewayAuthRequest.Explain,
 	}
 	if err := payoutGatewayAuthService.CreatePayoutGatewayAuth(payoutGatewayAuth); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
@@ -132,6 +134,7 @@ func (payoutGatewayAuthApi *PayoutGatewayAuthApi) UpdatePayoutGatewayAuth(c *gin
 		LimitMin        int    `json:"limitMin"`
 		LimitDay        int    `json:"limitDay"`
 		LimitTotal      int    `json:"limitTotal"`
+		Explain         string `json:"explain"`
 	}
 	var payoutGatewayAuthRequest PayoutGatewayAuthRequest
 	_ = c.ShouldBindJSON(&payoutGatewayAuthRequest)
@@ -159,6 +162,7 @@ func (payoutGatewayAuthApi *PayoutGatewayAuthApi) UpdatePayoutGatewayAuth(c *gin
 	payoutGatewayAuth.LimitMin = &payoutGatewayAuthRequest.LimitMin
 	payoutGatewayAuth.LimitDay = &payoutGatewayAuthRequest.LimitDay
 	payoutGatewayAuth.LimitTotal = &payoutGatewayAuthRequest.LimitTotal
+	payoutGatewayAuth.Explain = payoutGatewayAuthRequest.Explain
 	if err := global.GVA_DB.Save(&payoutGatewayAuth).Error; err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

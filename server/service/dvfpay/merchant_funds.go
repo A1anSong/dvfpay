@@ -64,6 +64,6 @@ func (merchantFundsService *MerchantFundsService) GetMerchantFundsInfoList(info 
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&merchantFundss).Error
+	err = db.Limit(limit).Offset(offset).Preload("Merchant").Find(&merchantFundss).Error
 	return err, merchantFundss, total
 }

@@ -64,7 +64,10 @@
         </el-table-column>
         <el-table-column align="left" label="订单id" prop="orderId" min-width="120" />
         <el-table-column align="left" label="金额" min-width="120">
-          <template #default="scope">{{ (scope.row.amount / 100).toFixed(2) }}</template>
+          <template #default="scope">{{
+            currencySymbols(scope.row.currency) + (scope.row.amount / 100).toFixed(2)
+          }}
+          </template>
         </el-table-column>
         <el-table-column align="left" label="币种" prop="currency" min-width="120" />
         <el-table-column align="left" label="状态" prop="status" min-width="120" />
@@ -172,6 +175,7 @@ import {
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
+import { currencySymbols } from '@/utils/dvfpay/currencySymbols'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 

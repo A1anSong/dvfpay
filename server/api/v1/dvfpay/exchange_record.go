@@ -2,20 +2,20 @@ package dvfpay
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
+	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type ExchangeRecordApi struct {
 }
 
 var exchangeRecordService = service.ServiceGroupApp.DvfpayServiceGroup.ExchangeRecordService
-
 
 // CreateExchangeRecord 创建ExchangeRecord
 // @Tags ExchangeRecord
@@ -29,11 +29,16 @@ var exchangeRecordService = service.ServiceGroupApp.DvfpayServiceGroup.ExchangeR
 func (exchangeRecordApi *ExchangeRecordApi) CreateExchangeRecord(c *gin.Context) {
 	var exchangeRecord dvfpay.ExchangeRecord
 	_ = c.ShouldBindJSON(&exchangeRecord)
-	if err := exchangeRecordService.CreateExchangeRecord(exchangeRecord); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
-		response.FailWithMessage("创建失败", c)
+	merchantID := utils.GetUserID(c)
+	if err := exchangeRecordService.CreateExchangeRecord(exchangeRecord, merchantID); err != nil {
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		if err.Error() == "余额不足，兑换失败！" {
+			response.FailWithMessage("余额不足，兑换失败！", c)
+		} else {
+			response.FailWithMessage("兑换失败", c)
+		}
 	} else {
-		response.OkWithMessage("创建成功", c)
+		response.OkWithMessage("兑换成功", c)
 	}
 }
 
@@ -50,7 +55,7 @@ func (exchangeRecordApi *ExchangeRecordApi) DeleteExchangeRecord(c *gin.Context)
 	var exchangeRecord dvfpay.ExchangeRecord
 	_ = c.ShouldBindJSON(&exchangeRecord)
 	if err := exchangeRecordService.DeleteExchangeRecord(exchangeRecord); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -68,9 +73,9 @@ func (exchangeRecordApi *ExchangeRecordApi) DeleteExchangeRecord(c *gin.Context)
 // @Router /exchangeRecord/deleteExchangeRecordByIds [delete]
 func (exchangeRecordApi *ExchangeRecordApi) DeleteExchangeRecordByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := exchangeRecordService.DeleteExchangeRecordByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -90,7 +95,7 @@ func (exchangeRecordApi *ExchangeRecordApi) UpdateExchangeRecord(c *gin.Context)
 	var exchangeRecord dvfpay.ExchangeRecord
 	_ = c.ShouldBindJSON(&exchangeRecord)
 	if err := exchangeRecordService.UpdateExchangeRecord(exchangeRecord); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -110,7 +115,7 @@ func (exchangeRecordApi *ExchangeRecordApi) FindExchangeRecord(c *gin.Context) {
 	var exchangeRecord dvfpay.ExchangeRecord
 	_ = c.ShouldBindQuery(&exchangeRecord)
 	if err, reexchangeRecord := exchangeRecordService.GetExchangeRecord(exchangeRecord.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"reexchangeRecord": reexchangeRecord}, c)
@@ -130,14 +135,14 @@ func (exchangeRecordApi *ExchangeRecordApi) GetExchangeRecordList(c *gin.Context
 	var pageInfo dvfpayReq.ExchangeRecordSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := exchangeRecordService.GetExchangeRecordInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }

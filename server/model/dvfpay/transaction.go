@@ -3,17 +3,19 @@ package dvfpay
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 )
 
 // Transaction 结构体
 // 如果含有time.Time 请自行import time包
 type Transaction struct {
 	global.GVA_MODEL
-	MerchantId *uint  `json:"merchantId" form:"merchantId" gorm:"column:merchant_id;comment:;"`
-	Type       string `json:"type" form:"type" gorm:"column:type;comment:;"`
-	Currency   string `json:"currency" form:"currency" gorm:"column:currency;comment:;"`
-	Amount     *int   `json:"amount" form:"amount" gorm:"column:amount;comment:;"`
-	Status     string `json:"status" form:"status" gorm:"column:status;comment:;"`
+	MerchantId *uint          `json:"merchantId" form:"merchantId" gorm:"column:merchant_id;comment:;"`
+	Merchant   system.SysUser `json:"merchant" gorm:"foreignKey:MerchantId"`
+	Operation  string         `json:"operation" form:"operation" gorm:"column:operation;comment:;"`
+	Currency   string         `json:"currency" form:"currency" gorm:"column:currency;comment:;"`
+	Amount     *int           `json:"amount" form:"amount" gorm:"column:amount;comment:;"`
+	Status     string         `json:"status" form:"status" gorm:"column:status;comment:;"`
 }
 
 // TableName Transaction 表名

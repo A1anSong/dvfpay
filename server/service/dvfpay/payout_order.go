@@ -66,9 +66,6 @@ func (payoutOrderService *PayoutOrderService) GetPayoutOrderInfoList(info dvfpay
 	if info.Status != "" {
 		db = db.Where("status = ?", info.Status)
 	}
-	if info.Payer != "" {
-		db = db.Where("payer LIKE ?", "%"+info.Payer+"%")
-	}
 	if info.Remark != "" {
 		db = db.Where("remark LIKE ?", "%"+info.Remark+"%")
 	}
@@ -98,9 +95,6 @@ func (payoutOrderService *PayoutOrderService) GetMerchantPayoutOrderInfoList(inf
 	}
 	if info.Status != "" {
 		db = db.Where("status = ?", info.Status)
-	}
-	if info.Payer != "" {
-		db = db.Where("payer LIKE ?", "%"+info.Payer+"%")
 	}
 	if info.Remark != "" {
 		db = db.Where("remark LIKE ?", "%"+info.Remark+"%")

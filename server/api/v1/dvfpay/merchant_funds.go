@@ -2,20 +2,20 @@ package dvfpay
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
+	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type MerchantFundsApi struct {
 }
 
 var merchantFundsService = service.ServiceGroupApp.DvfpayServiceGroup.MerchantFundsService
-
 
 // CreateMerchantFunds 创建MerchantFunds
 // @Tags MerchantFunds
@@ -30,7 +30,7 @@ func (merchantFundsApi *MerchantFundsApi) CreateMerchantFunds(c *gin.Context) {
 	var merchantFunds dvfpay.MerchantFunds
 	_ = c.ShouldBindJSON(&merchantFunds)
 	if err := merchantFundsService.CreateMerchantFunds(merchantFunds); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -50,7 +50,7 @@ func (merchantFundsApi *MerchantFundsApi) DeleteMerchantFunds(c *gin.Context) {
 	var merchantFunds dvfpay.MerchantFunds
 	_ = c.ShouldBindJSON(&merchantFunds)
 	if err := merchantFundsService.DeleteMerchantFunds(merchantFunds); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -68,9 +68,9 @@ func (merchantFundsApi *MerchantFundsApi) DeleteMerchantFunds(c *gin.Context) {
 // @Router /merchantFunds/deleteMerchantFundsByIds [delete]
 func (merchantFundsApi *MerchantFundsApi) DeleteMerchantFundsByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := merchantFundsService.DeleteMerchantFundsByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -90,7 +90,7 @@ func (merchantFundsApi *MerchantFundsApi) UpdateMerchantFunds(c *gin.Context) {
 	var merchantFunds dvfpay.MerchantFunds
 	_ = c.ShouldBindJSON(&merchantFunds)
 	if err := merchantFundsService.UpdateMerchantFunds(merchantFunds); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -110,7 +110,7 @@ func (merchantFundsApi *MerchantFundsApi) FindMerchantFunds(c *gin.Context) {
 	var merchantFunds dvfpay.MerchantFunds
 	_ = c.ShouldBindQuery(&merchantFunds)
 	if err, remerchantFunds := merchantFundsService.GetMerchantFunds(merchantFunds.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"remerchantFunds": remerchantFunds}, c)
@@ -130,14 +130,31 @@ func (merchantFundsApi *MerchantFundsApi) GetMerchantFundsList(c *gin.Context) {
 	var pageInfo dvfpayReq.MerchantFundsSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := merchantFundsService.GetMerchantFundsInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+func (merchantFundsApi *MerchantFundsApi) GetSelfMerchantFundsList(c *gin.Context) {
+	var pageInfo dvfpayReq.MerchantFundsSearch
+	_ = c.ShouldBindQuery(&pageInfo)
+	merchantID := utils.GetUserID(c)
+	if err, list, total := merchantFundsService.GetSelfMerchantFundsInfoList(pageInfo, merchantID); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }

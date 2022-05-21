@@ -95,3 +95,11 @@ export const getExchangeRecordList = (params) => {
     params
   })
 }
+
+export const getMerchantExchangeRecordList = (params) => {
+  return service({
+    url: '/exchangeRecord/getMerchantExchangeRecordList',
+    method: 'get',
+    params
+  })
+}

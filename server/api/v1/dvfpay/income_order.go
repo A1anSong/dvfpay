@@ -169,3 +169,32 @@ func (incomeOrderApi *IncomeOrderApi) ConfirmIncomeOrder(c *gin.Context) {
 		response.OkWithMessage("删除成功", c)
 	}
 }
+
+func (incomeOrderApi *IncomeOrderApi) GetStatisticsMerchantIncomeOrder(c *gin.Context) {
+	merchantID := utils.GetUserID(c)
+	if err, list := incomeOrderService.GetStatisticsMerchantIncomeOrder(merchantID); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List: list,
+		}, "获取成功", c)
+	}
+}
+
+func (incomeOrderApi *IncomeOrderApi) GetTrendsMerchantIncomeOrder(c *gin.Context) {
+	type Result struct {
+		SumList   interface{} `json:"sumList"`
+		CountList interface{} `json:"countList"`
+	}
+	merchantID := utils.GetUserID(c)
+	if err, sumList, countList := incomeOrderService.GetTrendsMerchantIncomeOrder(merchantID); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(Result{
+			SumList:   sumList,
+			CountList: countList,
+		}, "获取成功", c)
+	}
+}

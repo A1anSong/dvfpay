@@ -111,3 +111,19 @@ export const confirmIncomeOrder = (params) => {
     params
   })
 }
+
+export const getStatisticsMerchantIncomeOrder = (params) => {
+  return service({
+    url: '/incomeOrder/getStatisticsMerchantIncomeOrder',
+    method: 'get',
+    params
+  })
+}
+
+export const getTrendsMerchantIncomeOrder = (params) => {
+  return service({
+    url: '/incomeOrder/getTrendsMerchantIncomeOrder',
+    method: 'get',
+    params
+  })
+}

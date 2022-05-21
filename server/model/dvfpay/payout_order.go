@@ -16,7 +16,7 @@ type PayoutOrder struct {
 	Amount              *int              `json:"amount" form:"amount" gorm:"column:amount;comment:;"`
 	Currency            string            `json:"currency" form:"currency" gorm:"column:currency;comment:;"`
 	Status              string            `json:"status" form:"status" gorm:"column:status;comment:;"`
-	Payer               string            `json:"payer" form:"payer" gorm:"column:payer;comment:;"`
+	Receiver            string            `json:"receiver" form:"receiver" gorm:"column:receiver;comment:;"`
 	Remark              string            `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
 	MerchantId          *uint             `json:"merchantId" form:"merchantId" gorm:"column:merchant_id;comment:;"`
 	Merchant            system.SysUser    `json:"merchant" gorm:"foreignKey:MerchantId"`

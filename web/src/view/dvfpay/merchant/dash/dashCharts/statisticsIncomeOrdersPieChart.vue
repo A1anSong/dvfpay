@@ -1,0 +1,92 @@
+<template>
+  <div class="dashboard-line-box">
+    <div class="dashboard-line-title">
+      代收订单统计
+    </div>
+    <div
+      ref="echart"
+      class="dashboard-line"
+    />
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'StatisticsIncomeOrdersPieChart',
+}
+</script>
+
+<script setup>
+import * as echarts from 'echarts'
+import { nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue'
+import { getStatisticsMerchantIncomeOrder } from '@/api/dvfpay/incomeOrder'
+
+const chart = shallowRef(null)
+const echart = ref(null)
+const initChart = () => {
+  chart.value = echarts.init(echart.value, '', { locale: 'ZH' })
+  getData()
+}
+
+const statisticsIncomeOrderData = ref([])
+
+const getData = async() => {
+  chart.value.showLoading()
+  const table = await getStatisticsMerchantIncomeOrder()
+  if (table.code === 0) {
+    table.data.list && table.data.list.forEach((count) => {
+      if (count.name === '成功') {
+        count.itemStyle = {
+          color: '#91cc75',
+        }
+      }
+      if (count.name === '处理中') {
+        count.itemStyle = {
+          color: '#fac858',
+        }
+      }
+      statisticsIncomeOrderData.value.push(count)
+    })
+    chart.value.setOption({
+      legend: {},
+      tooltip: {},
+      series: [{
+        type: 'pie',
+        data: statisticsIncomeOrderData.value,
+      }],
+    })
+    chart.value.hideLoading()
+  }
+}
+
+onMounted(async() => {
+  await nextTick()
+  initChart()
+  window.addEventListener('resize', () => {
+    chart.value.resize()
+  })
+})
+
+onUnmounted(() => {
+  if (!chart.value) {
+    return
+  }
+  chart.value.dispose()
+  chart.value = null
+})
+</script>
+
+<style lang="scss" scoped>
+.dashboard-line-box {
+  .dashboard-line {
+    background-color: #fff;
+    height: 360px;
+    width: 100%;
+  }
+
+  .dashboard-line-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+}
+</style>

@@ -67,3 +67,24 @@ func (merchantFundsService *MerchantFundsService) GetMerchantFundsInfoList(info 
 	err = db.Limit(limit).Offset(offset).Preload("Merchant").Find(&merchantFundss).Error
 	return err, merchantFundss, total
 }
+
+func (merchantFundsService *MerchantFundsService) GetSelfMerchantFundsInfoList(info dvfpayReq.MerchantFundsSearch, merchantID uint) (err error, list interface{}, total int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	// 创建db
+	db := global.GVA_DB.Model(&dvfpay.MerchantFunds{}).Where("merchant_id = ?", merchantID)
+	var merchantFundss []dvfpay.MerchantFunds
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.MerchantId != nil {
+		db = db.Where("merchant_id = ?", info.MerchantId)
+	}
+	if info.Currency != "" {
+		db = db.Where("currency = ?", info.Currency)
+	}
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Find(&merchantFundss).Error
+	return err, merchantFundss, total
+}

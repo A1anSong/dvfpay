@@ -25,5 +25,7 @@ func (s *IncomeOrderRouter) InitIncomeOrderRouter(Router *gin.RouterGroup) {
 		incomeOrderRouterWithoutRecord.GET("getIncomeOrderList", incomeOrderApi.GetIncomeOrderList) // 获取IncomeOrder列表
 		incomeOrderRouterWithoutRecord.GET("getMerchantIncomeOrderList", incomeOrderApi.GetMerchantIncomeOrderList)
 		incomeOrderRouterWithoutRecord.PUT("confirmIncomeOrder", incomeOrderApi.ConfirmIncomeOrder)
+		incomeOrderRouterWithoutRecord.GET("getStatisticsMerchantIncomeOrder", incomeOrderApi.GetStatisticsMerchantIncomeOrder)
+		incomeOrderRouterWithoutRecord.GET("getTrendsMerchantIncomeOrder", incomeOrderApi.GetTrendsMerchantIncomeOrder)
 	}
 }

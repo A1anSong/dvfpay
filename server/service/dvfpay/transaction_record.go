@@ -54,20 +54,8 @@ func (transactionRecordService *TransactionRecordService) GetTransactionRecordIn
 	db := global.GVA_DB.Model(&dvfpay.TransactionRecord{})
 	var transactionRecords []dvfpay.TransactionRecord
 	// 如果有条件搜索 下方会自动创建搜索语句
-	if info.MerchantId != nil {
-		db = db.Where("merchant_id = ?", info.MerchantId)
-	}
-	if info.Type != "" {
-		db = db.Where("type = ?", info.Type)
-	}
-	if info.Currency != "" {
-		db = db.Where("currency = ?", info.Currency)
-	}
 	if info.AdminId != nil {
 		db = db.Where("admin_id = ?", info.AdminId)
-	}
-	if info.Operation != "" {
-		db = db.Where("operation = ?", info.Operation)
 	}
 	err = db.Count(&total).Error
 	if err != nil {

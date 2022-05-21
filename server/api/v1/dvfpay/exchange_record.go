@@ -146,3 +146,20 @@ func (exchangeRecordApi *ExchangeRecordApi) GetExchangeRecordList(c *gin.Context
 		}, "获取成功", c)
 	}
 }
+
+func (exchangeRecordApi *ExchangeRecordApi) GetMerchantExchangeRecordList(c *gin.Context) {
+	var pageInfo dvfpayReq.ExchangeRecordSearch
+	_ = c.ShouldBindQuery(&pageInfo)
+	merchantID := utils.GetUserID(c)
+	if err, list, total := exchangeRecordService.GetMerchantExchangeRecordInfoList(pageInfo, merchantID); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}

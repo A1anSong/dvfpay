@@ -6,19 +6,19 @@
         <el-button size="small" type="primary" icon="plus" @click="addUser">新增商户</el-button>
       </div>
       <el-table
-          :data="tableData"
-          row-key="ID"
+        :data="tableData"
+        row-key="ID"
       >
         <el-table-column align="left" label="头像" min-width="75">
           <template #default="scope">
-            <CustomPic style="margin-top:8px" :pic-src="scope.row.headerImg"/>
+            <CustomPic style="margin-top:8px" :pic-src="scope.row.headerImg" />
           </template>
         </el-table-column>
-        <el-table-column align="left" label="ID" min-width="50" prop="ID"/>
-        <el-table-column align="left" label="用户名" min-width="150" prop="userName"/>
-        <el-table-column align="left" label="昵称" min-width="150" prop="nickName"/>
-        <el-table-column align="left" label="手机号" min-width="180" prop="phone"/>
-        <el-table-column align="left" label="邮箱" min-width="180" prop="email"/>
+        <el-table-column align="left" label="ID" min-width="50" prop="ID" />
+        <el-table-column align="left" label="用户名" min-width="150" prop="userName" />
+        <el-table-column align="left" label="昵称" min-width="150" prop="nickName" />
+        <el-table-column align="left" label="手机号" min-width="180" prop="phone" />
+        <el-table-column align="left" label="邮箱" min-width="180" prop="email" />
         <!--        <el-table-column align="left" label="用户角色" min-width="200">-->
         <!--          <template #default="scope">-->
         <!--            <el-cascader-->
@@ -34,7 +34,7 @@
         <!--          </template>-->
         <!--        </el-table-column>-->
 
-        <el-table-column label="操作" min-width="250" fixed="right">
+        <el-table-column label="操作" min-width="250">
           <template #default="scope">
             <el-popover v-model:visible="scope.row.visible" placement="top" width="160">
               <p>确定要删除此用户吗</p>
@@ -55,40 +55,40 @@
       </el-table>
       <div class="gva-pagination">
         <el-pagination
-            :current-page="page"
-            :page-size="pageSize"
-            :page-sizes="[10, 30, 50, 100]"
-            :total="total"
-            layout="total, sizes, prev, pager, next, jumper"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
+          :current-page="page"
+          :page-size="pageSize"
+          :page-sizes="[10, 30, 50, 100]"
+          :total="total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
         />
       </div>
     </div>
     <el-dialog
-        v-model="addUserDialog"
-        custom-class="user-dialog"
-        title="商户"
-        :show-close="false"
-        :close-on-press-escape="false"
-        :close-on-click-modal="false"
+      v-model="addUserDialog"
+      custom-class="user-dialog"
+      title="商户"
+      :show-close="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
     >
       <div style="height:60vh;overflow:auto;padding:0 12px;">
         <el-form ref="userForm" :rules="rules" :model="userInfo" label-width="80px">
           <el-form-item v-if="dialogFlag === 'add'" label="用户名" prop="userName">
-            <el-input v-model="userInfo.userName"/>
+            <el-input v-model="userInfo.userName" />
           </el-form-item>
           <el-form-item v-if="dialogFlag === 'add'" label="密码" prop="password">
-            <el-input v-model="userInfo.password"/>
+            <el-input v-model="userInfo.password" />
           </el-form-item>
           <el-form-item label="昵称" prop="nickName">
-            <el-input v-model="userInfo.nickName"/>
+            <el-input v-model="userInfo.nickName" />
           </el-form-item>
           <el-form-item label="手机号" prop="phone">
-            <el-input v-model="userInfo.phone"/>
+            <el-input v-model="userInfo.phone" />
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
-            <el-input v-model="userInfo.email"/>
+            <el-input v-model="userInfo.email" />
           </el-form-item>
           <!--          <el-form-item label="用户角色" prop="authorityId">-->
           <!--            <el-cascader-->
@@ -102,8 +102,10 @@
           <!--          </el-form-item>-->
           <el-form-item label="头像" label-width="80px">
             <div style="display:inline-block" @click="openHeaderChange">
-              <img v-if="userInfo.headerImg" class="header-img-box"
-                   :src="(userInfo.headerImg && userInfo.headerImg.slice(0, 4) !== 'http')?path+userInfo.headerImg:userInfo.headerImg"
+              <img
+                v-if="userInfo.headerImg"
+                class="header-img-box"
+                :src="(userInfo.headerImg && userInfo.headerImg.slice(0, 4) !== 'http')?path+userInfo.headerImg:userInfo.headerImg"
               >
               <div v-else class="header-img-box">从媒体库选择</div>
             </div>
@@ -120,7 +122,7 @@
         </div>
       </template>
     </el-dialog>
-    <ChooseImg ref="chooseImg" :target="userInfo" :target-key="`headerImg`"/>
+    <ChooseImg ref="chooseImg" :target="userInfo" :target-key="`headerImg`" />
   </div>
 </template>
 
@@ -209,13 +211,13 @@ initPage()
 
 const resetPasswordFunc = (row) => {
   ElMessageBox.confirm(
-      '是否将此用户密码重置为123456?',
-      '警告',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      },
+    '是否将此用户密码重置为123456?',
+    '警告',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    },
   ).then(async() => {
     const res = await resetPassword({
       ID: row.ID,
@@ -235,10 +237,9 @@ const resetPasswordFunc = (row) => {
 }
 const setAuthorityIds = () => {
   tableData.value && tableData.value.forEach((user) => {
-    const authorityIds = user.authorities && user.authorities.map(i => {
+    user.authorityIds = user.authorities && user.authorities.map(i => {
       return i.authorityId
     })
-    user.authorityIds = authorityIds
   })
 }
 

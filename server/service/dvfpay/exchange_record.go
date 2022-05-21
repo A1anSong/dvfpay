@@ -137,6 +137,30 @@ func (exchangeRecordService *ExchangeRecordService) GetExchangeRecordInfoList(in
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Preload("Merchant").Find(&exchangeRecords).Error
+	err = db.Limit(limit).Offset(offset).Preload("Merchant").Order("arrival_time desc").Find(&exchangeRecords).Error
+	return err, exchangeRecords, total
+}
+
+func (exchangeRecordService *ExchangeRecordService) GetMerchantExchangeRecordInfoList(info dvfpayReq.ExchangeRecordSearch, merchantID uint) (err error, list interface{}, total int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	// 创建db
+	db := global.GVA_DB.Model(&dvfpay.ExchangeRecord{}).Where("merchant_id = ?", merchantID)
+	var exchangeRecords []dvfpay.ExchangeRecord
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.From != "" {
+		db = db.Where("from = ?", info.From)
+	}
+	if info.To != "" {
+		db = db.Where("to = ?", info.To)
+	}
+	if info.MerchantId != nil {
+		db = db.Where("merchant_id = ?", info.MerchantId)
+	}
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Order("created_at desc").Find(&exchangeRecords).Error
 	return err, exchangeRecords, total
 }

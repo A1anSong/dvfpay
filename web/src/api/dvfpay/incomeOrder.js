@@ -112,6 +112,30 @@ export const confirmIncomeOrder = (params) => {
   })
 }
 
+export const getStatisticsIncomeOrder = (params) => {
+  return service({
+    url: '/incomeOrder/getStatisticsIncomeOrder',
+    method: 'get',
+    params
+  })
+}
+
+export const getTrendsCountIncomeOrder = (params) => {
+  return service({
+    url: '/incomeOrder/getTrendsCountIncomeOrder',
+    method: 'get',
+    params
+  })
+}
+
+export const getTrendsSumIncomeOrder = (params) => {
+  return service({
+    url: '/incomeOrder/getTrendsSumIncomeOrder',
+    method: 'get',
+    params
+  })
+}
+
 export const getMerchantStatisticsIncomeOrder = (params) => {
   return service({
     url: '/incomeOrder/getMerchantStatisticsIncomeOrder',

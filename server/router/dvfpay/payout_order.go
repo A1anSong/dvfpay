@@ -24,6 +24,9 @@ func (s *PayoutOrderRouter) InitPayoutOrderRouter(Router *gin.RouterGroup) {
 		payoutOrderRouterWithoutRecord.GET("findPayoutOrder", payoutOrderApi.FindPayoutOrder)       // 根据ID获取PayoutOrder
 		payoutOrderRouterWithoutRecord.GET("getPayoutOrderList", payoutOrderApi.GetPayoutOrderList) // 获取PayoutOrder列表
 		payoutOrderRouterWithoutRecord.GET("getMerchantPayoutOrderList", payoutOrderApi.GetMerchantPayoutOrderList)
+		payoutOrderRouterWithoutRecord.GET("getStatisticsPayoutOrder", payoutOrderApi.GetStatisticsPayoutOrder)
+		payoutOrderRouterWithoutRecord.GET("getTrendsCountPayoutOrder", payoutOrderApi.GetTrendsCountPayoutOrder)
+		payoutOrderRouterWithoutRecord.GET("getTrendsSumPayoutOrder", payoutOrderApi.GetTrendsSumPayoutOrder)
 		payoutOrderRouterWithoutRecord.GET("getMerchantStatisticsPayoutOrder", payoutOrderApi.GetMerchantStatisticsPayoutOrder)
 		payoutOrderRouterWithoutRecord.GET("getMerchantTrendsCountPayoutOrder", payoutOrderApi.GetMerchantTrendsCountPayoutOrder)
 		payoutOrderRouterWithoutRecord.GET("getMerchantTrendsSumPayoutOrder", payoutOrderApi.GetMerchantTrendsSumPayoutOrder)

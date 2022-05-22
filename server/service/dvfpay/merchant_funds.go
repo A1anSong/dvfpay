@@ -68,6 +68,21 @@ func (merchantFundsService *MerchantFundsService) GetMerchantFundsInfoList(info 
 	return err, merchantFundss, total
 }
 
+func (merchantFundsService *MerchantFundsService) GetStatisticsMerchantFundsList() (err error, list interface{}) {
+	type Funds struct {
+		Currency    string `json:"currency"`
+		Available   int    `json:"available"`
+		Unavailable int    `json:"unavailable"`
+	}
+	db := global.GVA_DB.Model(&dvfpay.MerchantFunds{})
+	var fundss []Funds
+	if err != nil {
+		return
+	}
+	err = db.Select("currency, sum(available) as available, sum(unavailable) as unavailable").Group("currency").Find(&fundss).Error
+	return err, fundss
+}
+
 func (merchantFundsService *MerchantFundsService) GetSelfMerchantFundsInfoList(info dvfpayReq.MerchantFundsSearch, merchantID uint) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)

@@ -104,6 +104,30 @@ export const getMerchantPayoutOrderList = (params) => {
   })
 }
 
+export const getStatisticsPayoutOrder = (params) => {
+  return service({
+    url: '/payoutOrder/getStatisticsPayoutOrder',
+    method: 'get',
+    params
+  })
+}
+
+export const getTrendsCountPayoutOrder = (params) => {
+  return service({
+    url: '/payoutOrder/getTrendsCountPayoutOrder',
+    method: 'get',
+    params
+  })
+}
+
+export const getTrendsSumPayoutOrder = (params) => {
+  return service({
+    url: '/payoutOrder/getTrendsSumPayoutOrder',
+    method: 'get',
+    params
+  })
+}
+
 export const getMerchantStatisticsPayoutOrder = (params) => {
   return service({
     url: '/payoutOrder/getMerchantStatisticsPayoutOrder',

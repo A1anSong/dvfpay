@@ -23,6 +23,7 @@ func (s *MerchantFundsRouter) InitMerchantFundsRouter(Router *gin.RouterGroup) {
 	{
 		merchantFundsRouterWithoutRecord.GET("findMerchantFunds", merchantFundsApi.FindMerchantFunds)       // 根据ID获取MerchantFunds
 		merchantFundsRouterWithoutRecord.GET("getMerchantFundsList", merchantFundsApi.GetMerchantFundsList) // 获取MerchantFunds列表
+		merchantFundsRouterWithoutRecord.GET("getStatisticsMerchantFundsList", merchantFundsApi.GetStatisticsMerchantFundsList)
 		merchantFundsRouterWithoutRecord.GET("getSelfMerchantFundsList", merchantFundsApi.GetSelfMerchantFundsList)
 	}
 }

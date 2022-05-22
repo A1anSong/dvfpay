@@ -123,6 +123,73 @@ func (incomeOrderService *IncomeOrderService) ConfirmIncomeOrder(incomeOrder dvf
 	return err
 }
 
+func (incomeOrderService *IncomeOrderService) GetStatisticsIncomeOrder() (err error, list interface{}) {
+	// 创建db
+	db := global.GVA_DB.Model(&dvfpay.IncomeOrder{})
+	var statisticians []dvfpayUtil.Statistics
+	err = db.Select("count(*) as value, status as name").Group("status").Find(&statisticians).Error
+	if err == nil {
+		for i, _ := range statisticians {
+			if statisticians[i].Name == "success" {
+				statisticians[i].Name = "成功"
+			}
+			if statisticians[i].Name == "PENDING" {
+				statisticians[i].Name = "处理中"
+			}
+		}
+		sort.Sort(dvfpayUtil.Statisticians(statisticians))
+	}
+	return err, statisticians
+}
+
+func (incomeOrderService *IncomeOrderService) GetTrendsCountIncomeOrder() (err error, usdList interface{}, eurList interface{}, gbpList interface{}) {
+	type CountIncomeOrder struct {
+		Count int    `json:"count"`
+		Date  string `json:"date"`
+	}
+	endTime := time.Now().Unix()
+	loopTime := endTime - 86400*30
+	var dateList []string
+	for loopTime < endTime {
+		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
+		loopTime += 86400
+	}
+	var usdResults []CountIncomeOrder
+	var eurResults []CountIncomeOrder
+	var gbpResults []CountIncomeOrder
+	usdDb := global.GVA_DB.Model(&dvfpay.IncomeOrder{})
+	err = usdDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "USD").Group("date(arrival_time)").Find(&usdResults).Error
+	eurDb := global.GVA_DB.Model(&dvfpay.IncomeOrder{})
+	err = eurDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "EUR").Group("date(arrival_time)").Find(&eurResults).Error
+	gbpDb := global.GVA_DB.Model(&dvfpay.IncomeOrder{})
+	err = gbpDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "GBP").Group("date(arrival_time)").Find(&gbpResults).Error
+	return err, usdResults, eurResults, gbpResults
+}
+
+func (incomeOrderService *IncomeOrderService) GetTrendsSumIncomeOrder() (err error, usdList interface{}, eurList interface{}, gbpList interface{}) {
+	type SumIncomeOrder struct {
+		Sum  int    `json:"sum"`
+		Date string `json:"date"`
+	}
+	endTime := time.Now().Unix()
+	loopTime := endTime - 86400*30
+	var dateList []string
+	for loopTime < endTime {
+		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
+		loopTime += 86400
+	}
+	var usdResults []SumIncomeOrder
+	var eurResults []SumIncomeOrder
+	var gbpResults []SumIncomeOrder
+	usdDb := global.GVA_DB.Model(&dvfpay.IncomeOrder{})
+	err = usdDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "USD").Group("date(arrival_time)").Find(&usdResults).Error
+	eurDb := global.GVA_DB.Model(&dvfpay.IncomeOrder{})
+	err = eurDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "EUR").Group("date(arrival_time)").Find(&eurResults).Error
+	gbpDb := global.GVA_DB.Model(&dvfpay.IncomeOrder{})
+	err = gbpDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "GBP").Group("date(arrival_time)").Find(&gbpResults).Error
+	return err, usdResults, eurResults, gbpResults
+}
+
 func (incomeOrderService *IncomeOrderService) GetMerchantStatisticsIncomeOrder(merchantID uint) (err error, list interface{}) {
 	// 创建db
 	db := global.GVA_DB.Model(&dvfpay.IncomeOrder{}).Where("merchant_id = ?", merchantID)

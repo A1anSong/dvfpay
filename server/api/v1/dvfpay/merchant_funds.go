@@ -142,6 +142,17 @@ func (merchantFundsApi *MerchantFundsApi) GetMerchantFundsList(c *gin.Context) {
 	}
 }
 
+func (merchantFundsApi *MerchantFundsApi) GetStatisticsMerchantFundsList(c *gin.Context) {
+	if err, list := merchantFundsService.GetStatisticsMerchantFundsList(); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List: list,
+		}, "获取成功", c)
+	}
+}
+
 func (merchantFundsApi *MerchantFundsApi) GetSelfMerchantFundsList(c *gin.Context) {
 	var pageInfo dvfpayReq.MerchantFundsSearch
 	_ = c.ShouldBindQuery(&pageInfo)

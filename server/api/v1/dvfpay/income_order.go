@@ -170,6 +170,53 @@ func (incomeOrderApi *IncomeOrderApi) ConfirmIncomeOrder(c *gin.Context) {
 	}
 }
 
+func (incomeOrderApi *IncomeOrderApi) GetStatisticsIncomeOrder(c *gin.Context) {
+	if err, list := incomeOrderService.GetStatisticsIncomeOrder(); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List: list,
+		}, "获取成功", c)
+	}
+}
+
+func (incomeOrderApi *IncomeOrderApi) GetTrendsCountIncomeOrder(c *gin.Context) {
+	type Result struct {
+		UsdList interface{} `json:"usdList"`
+		EurList interface{} `json:"eurList"`
+		GbpList interface{} `json:"gbpList"`
+	}
+	if err, usdList, eurList, gbpList := incomeOrderService.GetTrendsCountIncomeOrder(); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(Result{
+			UsdList: usdList,
+			EurList: eurList,
+			GbpList: gbpList,
+		}, "获取成功", c)
+	}
+}
+
+func (incomeOrderApi *IncomeOrderApi) GetTrendsSumIncomeOrder(c *gin.Context) {
+	type Result struct {
+		UsdList interface{} `json:"usdList"`
+		EurList interface{} `json:"eurList"`
+		GbpList interface{} `json:"gbpList"`
+	}
+	if err, usdList, eurList, gbpList := incomeOrderService.GetTrendsSumIncomeOrder(); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(Result{
+			UsdList: usdList,
+			EurList: eurList,
+			GbpList: gbpList,
+		}, "获取成功", c)
+	}
+}
+
 func (incomeOrderApi *IncomeOrderApi) GetMerchantStatisticsIncomeOrder(c *gin.Context) {
 	merchantID := utils.GetUserID(c)
 	if err, list := incomeOrderService.GetMerchantStatisticsIncomeOrder(merchantID); err != nil {

@@ -96,6 +96,14 @@ export const getMerchantFundsList = (params) => {
   })
 }
 
+export const getStatisticsMerchantFundsList = (params) => {
+  return service({
+    url: '/merchantFunds/getStatisticsMerchantFundsList',
+    method: 'get',
+    params
+  })
+}
+
 export const getSelfMerchantFundsList = (params) => {
   return service({
     url: '/merchantFunds/getSelfMerchantFundsList',

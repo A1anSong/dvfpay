@@ -7,11 +7,14 @@
         </div>
         <div class="echart-box">
           <el-row :gutter="20">
-            <el-col :xs="24" :sm="12">
+            <el-col :xs="24" :sm="8">
               <funds-bar-chart />
             </el-col>
-            <el-col :xs="24" :sm="12">
+            <el-col :xs="24" :sm="8">
               <statistics-income-orders-pie-chart />
+            </el-col>
+            <el-col :xs="24" :sm="8">
+              <statistics-payout-orders-pie-chart />
             </el-col>
           </el-row>
         </div>
@@ -20,12 +23,32 @@
     <div class="gva-card-box">
       <div class="gva-card">
         <div class="card-header">
-          <span>订单统计</span>
+          <span>近30天代收订单趋势</span>
         </div>
         <div class="echart-box">
           <el-row :gutter="20">
-            <el-col>
-              <trends-income-orders-chart />
+            <el-col :xs="24" :sm="12">
+              <trends-count-income-orders-chart />
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <trends-sum-income-orders-chart />
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+    </div>
+    <div class="gva-card-box">
+      <div class="gva-card">
+        <div class="card-header">
+          <span>近30天代付订单趋势</span>
+        </div>
+        <div class="echart-box">
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="12">
+              <trends-count-payout-orders-chart />
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <trends-sum-payout-orders-chart />
             </el-col>
           </el-row>
         </div>
@@ -43,7 +66,11 @@ export default {
 <script setup>
 import FundsBarChart from '@/view/dvfpay/merchant/dash/dashCharts/fundsBarChart.vue'
 import StatisticsIncomeOrdersPieChart from '@/view/dvfpay/merchant/dash/dashCharts/statisticsIncomeOrdersPieChart.vue'
-import TrendsIncomeOrdersChart from '@/view/dvfpay/merchant/dash/dashCharts/trendsIncomeOrdersChart.vue'
+import StatisticsPayoutOrdersPieChart from '@/view/dvfpay/merchant/dash/dashCharts/statisticsPayoutOrdersPieChart.vue'
+import TrendsCountIncomeOrdersChart from '@/view/dvfpay/merchant/dash/dashCharts/trendsCountIncomeOrdersChart.vue'
+import TrendsSumIncomeOrdersChart from '@/view/dvfpay/merchant/dash/dashCharts/trendsSumIncomeOrdersChart.vue'
+import TrendsCountPayoutOrdersChart from '@/view/dvfpay/merchant/dash/dashCharts/trendsCountPayoutOrdersChart.vue'
+import TrendsSumPayoutOrdersChart from '@/view/dvfpay/merchant/dash/dashCharts/trendsSumPayoutOrdersChart.vue'
 
 </script>
 

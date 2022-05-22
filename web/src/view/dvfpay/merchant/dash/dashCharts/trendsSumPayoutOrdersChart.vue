@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-line-box">
     <div class="dashboard-line-title">
-      近30天代收订单趋势
+      订单金额
     </div>
     <div
       ref="echart"
@@ -12,14 +12,14 @@
 
 <script>
 export default {
-  name: 'TrendsIncomeOrdersChart',
+  name: 'TrendsSumPayoutOrdersChart',
 }
 </script>
 
 <script setup>
 import * as echarts from 'echarts'
 import { nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue'
-import { getTrendsMerchantIncomeOrder } from '@/api/dvfpay/incomeOrder'
+import { getMerchantTrendsSumPayoutOrder } from '@/api/dvfpay/payoutOrder'
 
 const chart = shallowRef(null)
 const echart = ref(null)
@@ -28,29 +28,36 @@ const initChart = () => {
   getData()
 }
 
-const sumData = ref([])
-const countData = ref([])
+const usdData = ref([])
+const eurData = ref([])
+const gbpData = ref([])
 
 const getData = async() => {
   chart.value.showLoading()
-  const table = await getTrendsMerchantIncomeOrder()
+  const table = await getMerchantTrendsSumPayoutOrder()
   if (table.code === 0) {
-    table.data.sumList && table.data.sumList.forEach((sum) => {
-      sumData.value.push({
+    table.data.usdList && table.data.usdList.forEach((sum) => {
+      usdData.value.push({
         date: sum.date,
         sum: sum.sum / 100,
       })
     })
-    table.data.countList && table.data.countList.forEach((count) => {
-      countData.value.push({
-        date: count.date,
-        count: count.count,
+    table.data.eurList && table.data.eurList.forEach((sum) => {
+      eurData.value.push({
+        date: sum.date,
+        sum: sum.sum / 100,
+      })
+    })
+    table.data.gbpList && table.data.gbpList.forEach((sum) => {
+      gbpData.value.push({
+        date: sum.date,
+        sum: sum.sum / 100,
       })
     })
     chart.value.setOption({
       grid: {
         left: '50',
-        right: '30',
+        right: '20',
         top: '40',
         bottom: '20',
       },
@@ -60,20 +67,21 @@ const getData = async() => {
         axisPointer: { type: 'cross' },
       },
       dataset: [{
-        source: sumData.value,
+        source: usdData.value,
       }, {
-        source: countData.value,
+        source: eurData.value,
+      }, {
+        source: gbpData.value,
       }],
       xAxis: {
         type: 'time',
-        maxInterval: 3600 * 24 * 1000,
         axisTick: {
           show: false,
           alignWithLabel: true,
         },
         axisLabel: {
           formatter: {
-            month: '{MMMM}',
+            month: '{MMM}',
             day: '{d}日',
           },
         },
@@ -81,23 +89,20 @@ const getData = async() => {
           show: false,
         },
       },
-      yAxis: [{
-        position: 'left',
-      }, {
-        position: 'right',
-      }],
+      yAxis: {},
       series: [{
-        name: '收单金额',
+        name: 'USD',
         datasetIndex: 0,
-        yAxisIndex: 0,
-        type: 'bar',
-        itemStyle: {
-          borderRadius: [5, 5, 0, 0],
-        },
+        type: 'line',
+        smooth: true,
       }, {
-        name: '订单数量',
+        name: 'EUR',
         datasetIndex: 1,
-        yAxisIndex: 1,
+        type: 'line',
+        smooth: true,
+      }, {
+        name: 'GBP',
+        datasetIndex: 2,
         type: 'line',
         smooth: true,
       }],
@@ -127,7 +132,7 @@ onUnmounted(() => {
 .dashboard-line-box {
   .dashboard-line {
     background-color: #fff;
-    height: 360px;
+    height: 240px;
     width: 100%;
   }
 

@@ -19,7 +19,7 @@ export default {
 <script setup>
 import * as echarts from 'echarts'
 import { nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue'
-import { getStatisticsMerchantIncomeOrder } from '@/api/dvfpay/incomeOrder'
+import { getMerchantStatisticsIncomeOrder } from '@/api/dvfpay/incomeOrder'
 
 const chart = shallowRef(null)
 const echart = ref(null)
@@ -32,7 +32,7 @@ const statisticsIncomeOrderData = ref([])
 
 const getData = async() => {
   chart.value.showLoading()
-  const table = await getStatisticsMerchantIncomeOrder()
+  const table = await getMerchantStatisticsIncomeOrder()
   if (table.code === 0) {
     table.data.list && table.data.list.forEach((count) => {
       if (count.name === '成功') {
@@ -48,12 +48,20 @@ const getData = async() => {
       statisticsIncomeOrderData.value.push(count)
     })
     chart.value.setOption({
+      grid: {
+        left: '40',
+        right: '20',
+        top: '40',
+        bottom: '20',
+      },
       legend: {},
       tooltip: {},
       series: [{
         type: 'pie',
+        top: '10%',
         data: statisticsIncomeOrderData.value,
       }],
+      roseType: 'area',
     })
     chart.value.hideLoading()
   }
@@ -80,7 +88,7 @@ onUnmounted(() => {
 .dashboard-line-box {
   .dashboard-line {
     background-color: #fff;
-    height: 360px;
+    height: 240px;
     width: 100%;
   }
 

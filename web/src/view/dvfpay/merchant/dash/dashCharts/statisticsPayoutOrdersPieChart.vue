@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-line-box">
     <div class="dashboard-line-title">
-      钱包余额
+      代付订单统计
     </div>
     <div
       ref="echart"
@@ -12,14 +12,14 @@
 
 <script>
 export default {
-  name: 'FundsBarChart',
+  name: 'StatisticsPayoutOrdersPieChart',
 }
 </script>
 
 <script setup>
 import * as echarts from 'echarts'
 import { nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue'
-import { getSelfMerchantFundsList } from '@/api/dvfpay/merchantFunds'
+import { getMerchantStatisticsPayoutOrder } from '@/api/dvfpay/payoutOrder'
 
 const chart = shallowRef(null)
 const echart = ref(null)
@@ -28,58 +28,40 @@ const initChart = () => {
   getData()
 }
 
-const currencyData = ref([])
+const statisticsIncomeOrderData = ref([])
 
 const getData = async() => {
   chart.value.showLoading()
-  const table = await getSelfMerchantFundsList({ page: 1, pageSize: 999 })
+  const table = await getMerchantStatisticsPayoutOrder()
   if (table.code === 0) {
-    table.data.list && table.data.list.forEach((funds) => {
-      if (funds.available !== 0 || funds.unavailable !== 0) {
-        currencyData.value.push({
-          currency: funds.currency,
-          '可用': funds.available / 100,
-          '不可用': funds.unavailable / 100,
-        })
+    table.data.list && table.data.list.forEach((count) => {
+      if (count.name === '成功') {
+        count.itemStyle = {
+          color: '#91cc75',
+        }
       }
+      if (count.name === '处理中') {
+        count.itemStyle = {
+          color: '#fac858',
+        }
+      }
+      statisticsIncomeOrderData.value.push(count)
     })
     chart.value.setOption({
       grid: {
-        left: '50',
+        left: '40',
         right: '20',
         top: '40',
         bottom: '20',
       },
       legend: {},
       tooltip: {},
-      dataset: {
-        source: currencyData.value,
-      },
-      xAxis: {
-        type: 'category',
-        axisTick: {
-          show: false,
-        },
-        axisLine: {
-          show: false,
-        },
-      },
-      yAxis: {},
       series: [{
-        type: 'bar',
-        name: '可用',
-        itemStyle: {
-          borderRadius: [5, 5, 0, 0],
-          color: '#91cc75',
-        },
-      }, {
-        type: 'bar',
-        name: '不可用',
-        itemStyle: {
-          borderRadius: [5, 5, 0, 0],
-          color: '#ee6666',
-        },
+        type: 'pie',
+        top: '10%',
+        data: statisticsIncomeOrderData.value,
       }],
+      roseType: 'area',
     })
     chart.value.hideLoading()
   }

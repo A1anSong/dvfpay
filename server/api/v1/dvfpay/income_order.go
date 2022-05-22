@@ -170,9 +170,9 @@ func (incomeOrderApi *IncomeOrderApi) ConfirmIncomeOrder(c *gin.Context) {
 	}
 }
 
-func (incomeOrderApi *IncomeOrderApi) GetStatisticsMerchantIncomeOrder(c *gin.Context) {
+func (incomeOrderApi *IncomeOrderApi) GetMerchantStatisticsIncomeOrder(c *gin.Context) {
 	merchantID := utils.GetUserID(c)
-	if err, list := incomeOrderService.GetStatisticsMerchantIncomeOrder(merchantID); err != nil {
+	if err, list := incomeOrderService.GetMerchantStatisticsIncomeOrder(merchantID); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
@@ -182,19 +182,40 @@ func (incomeOrderApi *IncomeOrderApi) GetStatisticsMerchantIncomeOrder(c *gin.Co
 	}
 }
 
-func (incomeOrderApi *IncomeOrderApi) GetTrendsMerchantIncomeOrder(c *gin.Context) {
+func (incomeOrderApi *IncomeOrderApi) GetMerchantTrendsCountIncomeOrder(c *gin.Context) {
 	type Result struct {
-		SumList   interface{} `json:"sumList"`
-		CountList interface{} `json:"countList"`
+		UsdList interface{} `json:"usdList"`
+		EurList interface{} `json:"eurList"`
+		GbpList interface{} `json:"gbpList"`
 	}
 	merchantID := utils.GetUserID(c)
-	if err, sumList, countList := incomeOrderService.GetTrendsMerchantIncomeOrder(merchantID); err != nil {
+	if err, usdList, eurList, gbpList := incomeOrderService.GetMerchantTrendsCountIncomeOrder(merchantID); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(Result{
-			SumList:   sumList,
-			CountList: countList,
+			UsdList: usdList,
+			EurList: eurList,
+			GbpList: gbpList,
+		}, "获取成功", c)
+	}
+}
+
+func (incomeOrderApi *IncomeOrderApi) GetMerchantTrendsSumIncomeOrder(c *gin.Context) {
+	type Result struct {
+		UsdList interface{} `json:"usdList"`
+		EurList interface{} `json:"eurList"`
+		GbpList interface{} `json:"gbpList"`
+	}
+	merchantID := utils.GetUserID(c)
+	if err, usdList, eurList, gbpList := incomeOrderService.GetMerchantTrendsSumIncomeOrder(merchantID); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(Result{
+			UsdList: usdList,
+			EurList: eurList,
+			GbpList: gbpList,
 		}, "获取成功", c)
 	}
 }

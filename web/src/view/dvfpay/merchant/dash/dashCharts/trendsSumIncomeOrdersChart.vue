@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-line-box">
     <div class="dashboard-line-title">
-      钱包余额
+      订单金额
     </div>
     <div
       ref="echart"
@@ -12,14 +12,14 @@
 
 <script>
 export default {
-  name: 'FundsBarChart',
+  name: 'TrendsSumIncomeOrdersChart',
 }
 </script>
 
 <script setup>
 import * as echarts from 'echarts'
 import { nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue'
-import { getSelfMerchantFundsList } from '@/api/dvfpay/merchantFunds'
+import { getMerchantTrendsSumIncomeOrder } from '@/api/dvfpay/incomeOrder'
 
 const chart = shallowRef(null)
 const echart = ref(null)
@@ -28,20 +28,31 @@ const initChart = () => {
   getData()
 }
 
-const currencyData = ref([])
+const usdData = ref([])
+const eurData = ref([])
+const gbpData = ref([])
 
 const getData = async() => {
   chart.value.showLoading()
-  const table = await getSelfMerchantFundsList({ page: 1, pageSize: 999 })
+  const table = await getMerchantTrendsSumIncomeOrder()
   if (table.code === 0) {
-    table.data.list && table.data.list.forEach((funds) => {
-      if (funds.available !== 0 || funds.unavailable !== 0) {
-        currencyData.value.push({
-          currency: funds.currency,
-          '可用': funds.available / 100,
-          '不可用': funds.unavailable / 100,
-        })
-      }
+    table.data.usdList && table.data.usdList.forEach((sum) => {
+      usdData.value.push({
+        date: sum.date,
+        sum: sum.sum / 100,
+      })
+    })
+    table.data.eurList && table.data.eurList.forEach((sum) => {
+      eurData.value.push({
+        date: sum.date,
+        sum: sum.sum / 100,
+      })
+    })
+    table.data.gbpList && table.data.gbpList.forEach((sum) => {
+      gbpData.value.push({
+        date: sum.date,
+        sum: sum.sum / 100,
+      })
     })
     chart.value.setOption({
       grid: {
@@ -51,14 +62,28 @@ const getData = async() => {
         bottom: '20',
       },
       legend: {},
-      tooltip: {},
-      dataset: {
-        source: currencyData.value,
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'cross' },
       },
+      dataset: [{
+        source: usdData.value,
+      }, {
+        source: eurData.value,
+      }, {
+        source: gbpData.value,
+      }],
       xAxis: {
-        type: 'category',
+        type: 'time',
         axisTick: {
           show: false,
+          alignWithLabel: true,
+        },
+        axisLabel: {
+          formatter: {
+            month: '{MMM}',
+            day: '{d}日',
+          },
         },
         axisLine: {
           show: false,
@@ -66,19 +91,20 @@ const getData = async() => {
       },
       yAxis: {},
       series: [{
-        type: 'bar',
-        name: '可用',
-        itemStyle: {
-          borderRadius: [5, 5, 0, 0],
-          color: '#91cc75',
-        },
+        name: 'USD',
+        datasetIndex: 0,
+        type: 'line',
+        smooth: true,
       }, {
-        type: 'bar',
-        name: '不可用',
-        itemStyle: {
-          borderRadius: [5, 5, 0, 0],
-          color: '#ee6666',
-        },
+        name: 'EUR',
+        datasetIndex: 1,
+        type: 'line',
+        smooth: true,
+      }, {
+        name: 'GBP',
+        datasetIndex: 2,
+        type: 'line',
+        smooth: true,
       }],
     })
     chart.value.hideLoading()

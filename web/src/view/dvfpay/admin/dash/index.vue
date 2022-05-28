@@ -23,7 +23,7 @@
     <div class="gva-card-box">
       <div class="gva-card">
         <div class="card-header">
-          <span>近30天代收订单趋势</span>
+          <span>代收订单近30天趋势</span>
         </div>
         <div class="echart-box">
           <el-row :gutter="20">
@@ -40,7 +40,7 @@
     <div class="gva-card-box">
       <div class="gva-card">
         <div class="card-header">
-          <span>近30天代付订单趋势</span>
+          <span>代付订单近30天趋势</span>
         </div>
         <div class="echart-box">
           <el-row :gutter="20">

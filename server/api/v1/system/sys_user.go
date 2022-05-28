@@ -412,3 +412,15 @@ func (b *BaseApi) GetMerchantList(c *gin.Context) {
 		}, "获取成功", c)
 	}
 }
+
+func (b *BaseApi) GetAPIKey(c *gin.Context) {
+	merchantID := utils.GetUserID(c)
+	if err, list := userService.GetAPIKey(merchantID); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List: list,
+		}, "获取成功", c)
+	}
+}

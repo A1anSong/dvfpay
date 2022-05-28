@@ -82,5 +82,11 @@ func (incomeGatewayAuthService *IncomeGatewayAuthService) GetMerchantIncomeGatew
 		return
 	}
 	err = db.Limit(limit).Offset(offset).Preload("IncomeGateway").Find(&incomeGatewayAuths).Error
+	if err == nil {
+		for i, _ := range incomeGatewayAuths {
+			incomeGatewayAuths[i].IncomeGateway.Parameter = ""
+			*incomeGatewayAuths[i].IncomeGateway.Fee = -1
+		}
+	}
 	return err, incomeGatewayAuths, total
 }

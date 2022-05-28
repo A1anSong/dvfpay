@@ -7,7 +7,7 @@ export const login = (data) => {
   return service({
     url: '/base/login',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -19,7 +19,7 @@ export const captcha = (data) => {
   return service({
     url: '/base/captcha',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -31,7 +31,7 @@ export const register = (data) => {
   return service({
     url: '/user/admin_register',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -43,7 +43,7 @@ export const changePassword = (data) => {
   return service({
     url: '/user/changePassword',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -59,7 +59,7 @@ export const getUserList = (data) => {
   return service({
     url: '/user/getUserList',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -75,7 +75,7 @@ export const setUserAuthority = (data) => {
   return service({
     url: '/user/setUserAuthority',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -91,7 +91,7 @@ export const deleteUser = (data) => {
   return service({
     url: '/user/deleteUser',
     method: 'delete',
-    data: data
+    data: data,
   })
 }
 
@@ -107,7 +107,7 @@ export const setUserInfo = (data) => {
   return service({
     url: '/user/setUserInfo',
     method: 'put',
-    data: data
+    data: data,
   })
 }
 
@@ -123,7 +123,7 @@ export const setSelfInfo = (data) => {
   return service({
     url: '/user/setSelfInfo',
     method: 'put',
-    data: data
+    data: data,
   })
 }
 
@@ -139,7 +139,7 @@ export const setUserAuthorities = (data) => {
   return service({
     url: '/user/setUserAuthorities',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -153,7 +153,7 @@ export const setUserAuthorities = (data) => {
 export const getUserInfo = () => {
   return service({
     url: '/user/getUserInfo',
-    method: 'get'
+    method: 'get',
   })
 }
 
@@ -161,7 +161,7 @@ export const resetPassword = (data) => {
   return service({
     url: '/user/resetPassword',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -177,7 +177,7 @@ export const getMerchantInfoList = (data) => {
   return service({
     url: '/user/getMerchantInfoList',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 // @Tags Merchant
@@ -192,6 +192,14 @@ export const getMerchantList = (data) => {
   return service({
     url: '/user/getMerchantList',
     method: 'get',
-    data: data
+    data: data,
+  })
+}
+
+export const getAPIKey = (data) => {
+  return service({
+    url: '/user/getAPIKey',
+    method: 'get',
+    data: data,
   })
 }

@@ -14,6 +14,7 @@ type TransactionRecord struct {
 	Transaction   Transaction    `json:"transaction"`
 	AdminId       *uint          `json:"adminId" form:"adminId" gorm:"column:admin_id;comment:;"`
 	Admin         system.SysUser `json:"admin" gorm:"foreignKey:AdminId"`
+	Operation     string         `json:"operation" form:"operation" gorm:"column:operation;comment:;"`
 }
 
 // TableName TransactionRecord 表名

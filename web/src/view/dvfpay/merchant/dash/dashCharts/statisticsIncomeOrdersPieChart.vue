@@ -40,9 +40,14 @@ const getData = async() => {
           color: '#91cc75',
         }
       }
-      if (count.name === '处理中') {
+      if (count.name === '待定') {
         count.itemStyle = {
           color: '#fac858',
+        }
+      }
+      if (count.name === '结算') {
+        count.itemStyle = {
+          color: '#5470c6',
         }
       }
       statisticsIncomeOrderData.value.push(count)
@@ -61,7 +66,6 @@ const getData = async() => {
         top: '10%',
         data: statisticsIncomeOrderData.value,
       }],
-      roseType: 'area',
     })
     chart.value.hideLoading()
   }

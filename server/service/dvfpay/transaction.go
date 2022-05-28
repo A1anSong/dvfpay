@@ -60,9 +60,6 @@ func (transactionService *TransactionService) GetTransactionInfoList(info dvfpay
 	if info.Operation != "" {
 		db = db.Where("type = ?", info.Operation)
 	}
-	if info.Currency != "" {
-		db = db.Where("currency = ?", info.Currency)
-	}
 	if info.Status != "" {
 		db = db.Where("status = ?", info.Status)
 	}

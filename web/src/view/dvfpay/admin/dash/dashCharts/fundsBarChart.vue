@@ -51,7 +51,10 @@ const getData = async() => {
         bottom: '20',
       },
       legend: {},
-      tooltip: {},
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'cross' },
+      },
       dataset: {
         source: currencyData.value,
       },

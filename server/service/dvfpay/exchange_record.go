@@ -137,7 +137,7 @@ func (exchangeRecordService *ExchangeRecordService) GetExchangeRecordInfoList(in
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Preload("Merchant").Order("arrival_time desc").Find(&exchangeRecords).Error
+	err = db.Limit(limit).Offset(offset).Preload("Merchant").Order("updated_at desc").Find(&exchangeRecords).Error
 	return err, exchangeRecords, total
 }
 
@@ -161,6 +161,6 @@ func (exchangeRecordService *ExchangeRecordService) GetMerchantExchangeRecordInf
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("created_at desc").Find(&exchangeRecords).Error
+	err = db.Limit(limit).Offset(offset).Order("updated_at desc").Find(&exchangeRecords).Error
 	return err, exchangeRecords, total
 }

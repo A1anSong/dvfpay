@@ -9,8 +9,9 @@ type Statisticians []Statistics
 func (s Statisticians) Len() int { return len(s) }
 func (s Statisticians) Less(i, j int) bool {
 	statisticiansMap := map[string]int{
-		"成功":  0,
-		"处理中": 1,
+		"成功": 0,
+		"待定": 1,
+		"结算": 2,
 	}
 	return statisticiansMap[s[i].Name] < statisticiansMap[s[j].Name]
 }

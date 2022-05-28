@@ -262,3 +262,21 @@ func (userService *UserService) GetMerchantList() (err error, list interface{}) 
 	err = global.GVA_DB.Table("sys_users").Where("deleted_at is null and authority_id = ?", "13").Select("id", "nick_name").Find(&merchantList).Error
 	return err, merchantList
 }
+
+func (userService *UserService) GetAPIKey(merchantID uint) (err error, list interface{}) {
+	type APIKey struct {
+		UUID      string `json:"merchantId"`
+		SecretKey string `json:"secretKey"`
+	}
+	var apiKeys []APIKey
+	var merchant system.SysUser
+	err = global.GVA_DB.First(&merchant, merchantID).Error
+	if err == nil {
+		apiKey := APIKey{
+			UUID:      merchant.UUID.String(),
+			SecretKey: utils.MD5V([]byte(merchant.UUID.String() + "dvfpay")),
+		}
+		apiKeys = append(apiKeys, apiKey)
+	}
+	return err, apiKeys
+}

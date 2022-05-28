@@ -134,7 +134,10 @@ func (incomeOrderService *IncomeOrderService) GetStatisticsIncomeOrder() (err er
 				statisticians[i].Name = "成功"
 			}
 			if statisticians[i].Name == "PENDING" {
-				statisticians[i].Name = "处理中"
+				statisticians[i].Name = "待定"
+			}
+			if statisticians[i].Name == "SETTLED" {
+				statisticians[i].Name = "结算"
 			}
 		}
 		sort.Sort(dvfpayUtil.Statisticians(statisticians))
@@ -150,7 +153,7 @@ func (incomeOrderService *IncomeOrderService) GetTrendsCountIncomeOrder() (err e
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
 	var dateList []string
-	for loopTime < endTime {
+	for loopTime <= endTime {
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}
@@ -174,7 +177,7 @@ func (incomeOrderService *IncomeOrderService) GetTrendsSumIncomeOrder() (err err
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
 	var dateList []string
-	for loopTime < endTime {
+	for loopTime <= endTime {
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}
@@ -201,7 +204,10 @@ func (incomeOrderService *IncomeOrderService) GetMerchantStatisticsIncomeOrder(m
 				statisticians[i].Name = "成功"
 			}
 			if statisticians[i].Name == "PENDING" {
-				statisticians[i].Name = "处理中"
+				statisticians[i].Name = "待定"
+			}
+			if statisticians[i].Name == "SETTLED" {
+				statisticians[i].Name = "结算"
 			}
 		}
 		sort.Sort(dvfpayUtil.Statisticians(statisticians))
@@ -217,7 +223,7 @@ func (incomeOrderService *IncomeOrderService) GetMerchantTrendsCountIncomeOrder(
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
 	var dateList []string
-	for loopTime < endTime {
+	for loopTime <= endTime {
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}
@@ -241,7 +247,7 @@ func (incomeOrderService *IncomeOrderService) GetMerchantTrendsSumIncomeOrder(me
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
 	var dateList []string
-	for loopTime < endTime {
+	for loopTime <= endTime {
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}

@@ -82,5 +82,11 @@ func (payoutGatewayAuthService *PayoutGatewayAuthService) GetMerchantPayoutGatew
 		return
 	}
 	err = db.Limit(limit).Offset(offset).Preload("PayoutGateway").Find(&payoutGatewayAuths).Error
+	if err == nil {
+		for i, _ := range payoutGatewayAuths {
+			payoutGatewayAuths[i].PayoutGateway.Parameter = ""
+			*payoutGatewayAuths[i].PayoutGateway.Fee = -1
+		}
+	}
 	return err, payoutGatewayAuths, total
 }

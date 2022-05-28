@@ -76,8 +76,7 @@ const getData = async() => {
       xAxis: {
         type: 'time',
         axisTick: {
-          show: false,
-          alignWithLabel: true,
+          show: false
         },
         axisLabel: {
           formatter: {

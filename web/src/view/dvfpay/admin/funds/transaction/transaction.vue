@@ -1,46 +1,46 @@
 <template>
   <div>
-    <div class="gva-search-box">
-      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="商户id">
-          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item label="类型">
-          <el-input v-model="searchInfo.type" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item label="币种">
-          <el-input v-model="searchInfo.currency" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-input v-model="searchInfo.status" placeholder="搜索条件" />
-        </el-form-item>
-        <el-form-item>
-          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
-          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <!--    <div class="gva-search-box">-->
+    <!--      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">-->
+    <!--        <el-form-item label="商户id">-->
+    <!--          <el-input v-model="searchInfo.merchantId" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="类型">-->
+    <!--          <el-input v-model="searchInfo.type" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="币种">-->
+    <!--          <el-input v-model="searchInfo.currency" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="状态">-->
+    <!--          <el-input v-model="searchInfo.status" placeholder="搜索条件" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item>-->
+    <!--          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>-->
+    <!--          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>-->
+    <!--        </el-form-item>-->
+    <!--      </el-form>-->
+    <!--    </div>-->
     <div class="gva-table-box">
-      <div class="gva-btn-list">
-        <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
-        <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-          <p>确定要删除吗？</p>
-          <div style="text-align: right; margin-top: 8px;">
-            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>
-            <el-button size="small" type="primary" @click="onDelete">确定</el-button>
-          </div>
-          <template #reference>
-            <el-button
-              icon="delete"
-              size="small"
-              style="margin-left: 10px;"
-              :disabled="!multipleSelection.length"
-              @click="deleteVisible = true"
-            >删除
-            </el-button>
-          </template>
-        </el-popover>
-      </div>
+      <!--      <div class="gva-btn-list">-->
+      <!--        <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>-->
+      <!--        <el-popover v-model:visible="deleteVisible" placement="top" width="160">-->
+      <!--          <p>确定要删除吗？</p>-->
+      <!--          <div style="text-align: right; margin-top: 8px;">-->
+      <!--            <el-button size="small" type="text" @click="deleteVisible = false">取消</el-button>-->
+      <!--            <el-button size="small" type="primary" @click="onDelete">确定</el-button>-->
+      <!--          </div>-->
+      <!--          <template #reference>-->
+      <!--            <el-button-->
+      <!--              icon="delete"-->
+      <!--              size="small"-->
+      <!--              style="margin-left: 10px;"-->
+      <!--              :disabled="!multipleSelection.length"-->
+      <!--              @click="deleteVisible = true"-->
+      <!--            >删除-->
+      <!--            </el-button>-->
+      <!--          </template>-->
+      <!--        </el-popover>-->
+      <!--      </div>-->
       <el-table
         ref="multipleTable"
         style="width: 100%"
@@ -49,15 +49,15 @@
         row-key="ID"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
+        <!--        <el-table-column type="selection" width="55" />-->
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="商户id" prop="merchantId" width="120" />
-        <el-table-column align="left" label="类型" prop="type" width="120" />
-        <el-table-column align="left" label="币种" prop="currency" width="120" />
-        <el-table-column align="left" label="金额" prop="amount" width="120" />
-        <el-table-column align="left" label="状态" prop="status" width="120" />
+        <el-table-column align="left" label="商户" prop="merchantId" min-width="120" />
+        <el-table-column align="left" label="操作" prop="operation" min-width="120" />
+        <el-table-column align="left" label="金额" prop="amount" min-width="120" />
+        <el-table-column align="left" label="状态" prop="status" min-width="120" />
+        <el-table-column align="left" label="TxID" prop="txID" min-width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button
@@ -122,7 +122,7 @@ export default {
 import {
   createTransaction,
   deleteTransaction,
-  deleteTransactionByIds,
+  // deleteTransactionByIds,
   updateTransaction,
   findTransaction,
   getTransactionList,
@@ -150,16 +150,16 @@ const tableData = ref([])
 const searchInfo = ref({})
 
 // 重置
-const onReset = () => {
-  searchInfo.value = {}
-}
+// const onReset = () => {
+//   searchInfo.value = {}
+// }
 
 // 搜索
-const onSubmit = () => {
-  page.value = 1
-  pageSize.value = 10
-  getTableData()
-}
+// const onSubmit = () => {
+//   page.value = 1
+//   pageSize.value = 10
+//   getTableData()
+// }
 
 // 分页
 const handleSizeChange = (val) => {
@@ -214,35 +214,35 @@ const deleteRow = (row) => {
 }
 
 // 批量删除控制标记
-const deleteVisible = ref(false)
+// const deleteVisible = ref(false)
 
 // 多选删除
-const onDelete = async() => {
-  const ids = []
-  if (multipleSelection.value.length === 0) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择要删除的数据',
-    })
-    return
-  }
-  multipleSelection.value &&
-  multipleSelection.value.map(item => {
-    ids.push(item.ID)
-  })
-  const res = await deleteTransactionByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功',
-    })
-    if (tableData.value.length === ids.length && page.value > 1) {
-      page.value--
-    }
-    deleteVisible.value = false
-    getTableData()
-  }
-}
+// const onDelete = async() => {
+//   const ids = []
+//   if (multipleSelection.value.length === 0) {
+//     ElMessage({
+//       type: 'warning',
+//       message: '请选择要删除的数据',
+//     })
+//     return
+//   }
+//   multipleSelection.value &&
+//   multipleSelection.value.map(item => {
+//     ids.push(item.ID)
+//   })
+//   const res = await deleteTransactionByIds({ ids })
+//   if (res.code === 0) {
+//     ElMessage({
+//       type: 'success',
+//       message: '删除成功',
+//     })
+//     if (tableData.value.length === ids.length && page.value > 1) {
+//       page.value--
+//     }
+//     deleteVisible.value = false
+//     getTableData()
+//   }
+// }
 
 // 行为控制标记（弹窗内部需要增还是改）
 const type = ref('')
@@ -276,10 +276,10 @@ const deleteTransactionFunc = async(row) => {
 const dialogFormVisible = ref(false)
 
 // 打开弹窗
-const openDialog = () => {
-  type.value = 'create'
-  dialogFormVisible.value = true
-}
+// const openDialog = () => {
+//   type.value = 'create'
+//   dialogFormVisible.value = true
+// }
 
 // 关闭弹窗
 const closeDialog = () => {

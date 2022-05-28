@@ -23,6 +23,10 @@ type IncomeOrder struct {
 	IncomeGatewayAuthId *uint             `json:"incomeGatewayAuthId" form:"incomeGatewayAuthId" gorm:"column:income_gateway_auth_id;comment:;"`
 	IncomeGatewayAuth   IncomeGatewayAuth `json:"incomeGatewayAuth" form:"incomeGatewayAuth"`
 	Confirmed           bool              `json:"confirmed" form:"confirmed" gorm:"column:confirmed;comment:;"`
+	NotifyURL           string            `json:"-" form:"notifyURL" gorm:"column:notify_url;comment:;"`
+	NotifyStatus        int               `json:"-" form:"notifyStatus" gorm:"column:notify_status;comment:;"`
+	MetaData            string            `json:"-" form:"metaData" gorm:"column:meta_data;type:text;comment:;"`
+	MerchantOrderId     string            `json:"-" form:"merchantOrderId" gorm:"column:merchant_order_id;comment:;"`
 }
 
 // TableName IncomeOrder 表名

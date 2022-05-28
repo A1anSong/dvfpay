@@ -18,7 +18,7 @@ type IncomeGatewayAuth struct {
 	LimitMin        *int              `json:"limitMin" form:"limitMin" gorm:"column:limit_min;comment:;"`
 	LimitDay        *int              `json:"limitDay" form:"limitDay" gorm:"column:limit_day;comment:;"`
 	LimitTotal      *int              `json:"limitTotal" form:"limitTotal" gorm:"column:limit_total;comment:;"`
-	Explain         string            `json:"explain" form:"explain" gorm:"column:explain;comment:;"`
+	Explain         string            `json:"explain" form:"explain" gorm:"column:explain;type:text;comment:;"`
 }
 
 // TableName IncomeGatewayAuth 表名

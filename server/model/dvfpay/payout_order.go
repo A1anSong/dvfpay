@@ -22,6 +22,10 @@ type PayoutOrder struct {
 	Merchant            system.SysUser    `json:"merchant" gorm:"foreignKey:MerchantId"`
 	PayoutGatewayAuthId *uint             `json:"payoutGatewayAuthId" form:"payoutGatewayAuthId" gorm:"column:payout_gateway_auth_id;comment:;"`
 	PayoutGatewayAuth   PayoutGatewayAuth `json:"payoutGatewayAuth" form:"payoutGatewayAuth"`
+	NotifyURL           string            `json:"-" form:"notifyURL" gorm:"column:notify_url;comment:;"`
+	NotifyStatus        int               `json:"-" form:"notifyStatus" gorm:"column:notify_status;comment:;"`
+	MetaData            string            `json:"-" form:"metaData" gorm:"column:meta_data;type:text;comment:;"`
+	MerchantOrderId     string            `json:"-" form:"merchantOrderId" gorm:"column:merchant_order_id;comment:;"`
 }
 
 // TableName PayoutOrder 表名

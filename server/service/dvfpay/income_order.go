@@ -60,20 +60,14 @@ func (incomeOrderService *IncomeOrderService) GetIncomeOrderInfoList(info dvfpay
 	if info.OrderId != "" {
 		db = db.Where("order_id LIKE ?", "%"+info.OrderId+"%")
 	}
-	if info.Amount != nil {
-		db = db.Where("amount = ?", info.Amount)
-	}
-	if info.Currency != "" {
-		db = db.Where("currency = ?", info.Currency)
-	}
 	if info.Status != "" {
 		db = db.Where("status = ?", info.Status)
 	}
-	if info.Payer != "" {
-		db = db.Where("payer LIKE ?", "%"+info.Payer+"%")
+	if info.MetaData != "" {
+		db = db.Where("meta_data LIKE ?", "%"+info.MetaData+"%")
 	}
-	if info.Remark != "" {
-		db = db.Where("remark LIKE ?", "%"+info.Remark+"%")
+	if info.ArrivalTime != nil {
+		db = db.Where("date(arrival_time) = date(?)", info.ArrivalTime)
 	}
 	err = db.Count(&total).Error
 	if err != nil {
@@ -93,20 +87,14 @@ func (incomeOrderService *IncomeOrderService) GetMerchantIncomeOrderInfoList(inf
 	if info.OrderId != "" {
 		db = db.Where("order_id LIKE ?", "%"+info.OrderId+"%")
 	}
-	if info.Amount != nil {
-		db = db.Where("amount = ?", info.Amount)
-	}
-	if info.Currency != "" {
-		db = db.Where("currency = ?", info.Currency)
-	}
 	if info.Status != "" {
 		db = db.Where("status = ?", info.Status)
 	}
-	if info.Payer != "" {
-		db = db.Where("payer LIKE ?", "%"+info.Payer+"%")
+	if info.MetaData != "" {
+		db = db.Where("meta_data LIKE ?", "%"+info.MetaData+"%")
 	}
-	if info.Remark != "" {
-		db = db.Where("remark LIKE ?", "%"+info.Remark+"%")
+	if info.ArrivalTime != nil {
+		db = db.Where("date(arrival_time) = date(?)", info.ArrivalTime)
 	}
 	err = db.Count(&total).Error
 	if err != nil {

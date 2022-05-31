@@ -1,31 +1,41 @@
 <template>
   <div>
-    <!--    <div class="gva-search-box">-->
-    <!--      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">-->
-    <!--        <el-form-item label="订单id">-->
-    <!--          <el-input v-model="searchInfo.orderId" placeholder="搜索条件" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="金额">-->
-    <!--          <el-input v-model="searchInfo.amount" placeholder="搜索条件" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="币种">-->
-    <!--          <el-input v-model="searchInfo.currency" placeholder="搜索条件" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="状态">-->
-    <!--          <el-input v-model="searchInfo.status" placeholder="搜索条件" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="付款人">-->
-    <!--          <el-input v-model="searchInfo.payer" placeholder="搜索条件" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="备注">-->
-    <!--          <el-input v-model="searchInfo.remark" placeholder="搜索条件" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item>-->
-    <!--          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>-->
-    <!--          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>-->
-    <!--        </el-form-item>-->
-    <!--      </el-form>-->
-    <!--    </div>-->
+    <div class="gva-search-box">
+      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="订单id">
+          <el-input v-model="searchInfo.orderId" placeholder="搜索条件" />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="searchInfo.status" placeholder="搜索条件">
+            <el-option
+              key="success"
+              label="成功"
+              value="success"
+            />
+            <el-option
+              key="PENDING"
+              label="待定"
+              value="PENDING"
+            />
+            <el-option
+              key="SETTLED"
+              label="结算"
+              value="SETTLED"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="订单信息">
+          <el-input v-model="searchInfo.metaData" placeholder="搜索条件" />
+        </el-form-item>
+        <el-form-item label="日期">
+          <el-date-picker v-model="searchInfo.arrivalTime" type="date" placeholder="选择日期" clearable />
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
+          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <div class="gva-table-box">
       <!--            <div class="gva-btn-list">-->
       <!--              <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>-->
@@ -62,6 +72,7 @@
         <el-table-column align="left" label="到账时间" min-width="180">
           <template #default="scope">{{ formatDate(scope.row.arrivalTime) }}</template>
         </el-table-column>
+        <el-table-column align="left" label="商户订单号" prop="merchantOrderId" min-width="120" />
         <el-table-column align="left" label="订单id" prop="orderId" min-width="120" />
         <el-table-column align="left" label="金额" min-width="120">
           <template #default="scope">{{
@@ -70,7 +81,9 @@
           </template>
         </el-table-column>
         <el-table-column align="left" label="币种" prop="currency" min-width="120" />
-        <el-table-column align="left" label="状态" prop="status" min-width="120" />
+        <el-table-column align="left" label="状态" min-width="120">
+          <template #default="scope">{{ statusDisplay(scope.row.status) }}</template>
+        </el-table-column>
         <el-table-column align="left" label="付款人" prop="payer" min-width="120" />
         <el-table-column align="left" label="备注" prop="remark" min-width="120" />
         <el-table-column align="left" label="商户名称" prop="merchant.nickName" min-width="120" />
@@ -171,6 +184,7 @@ import {
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
 import { currencySymbols } from '@/utils/dvfpay/currencySymbols'
+import { statusDisplay } from '@/utils/dvfpay/statusDisplay'
 // import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 
@@ -194,16 +208,16 @@ const tableData = ref([])
 const searchInfo = ref({})
 
 // 重置
-// const onReset = () => {
-//   searchInfo.value = {}
-// }
+const onReset = () => {
+  searchInfo.value = {}
+}
 
 // 搜索
-// const onSubmit = () => {
-//   page.value = 1
-//   pageSize.value = 10
-//   getTableData()
-// }
+const onSubmit = () => {
+  page.value = 1
+  pageSize.value = 10
+  getTableData()
+}
 
 // 分页
 const handleSizeChange = (val) => {

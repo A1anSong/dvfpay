@@ -13,6 +13,7 @@ type Transaction struct {
 	MerchantId *uint          `json:"merchantId" form:"merchantId" gorm:"column:merchant_id;comment:;"`
 	Merchant   system.SysUser `json:"merchant" gorm:"foreignKey:MerchantId"`
 	Operation  string         `json:"operation" form:"operation" gorm:"column:operation;comment:;"`
+	Address    string         `json:"address" form:"address" gorm:"column:address;comment:;"`
 	Amount     *int           `json:"amount" form:"amount" gorm:"column:amount;comment:;"`
 	Status     string         `json:"status" form:"status" gorm:"column:status;comment:;"`
 	TxID       string         `json:"txID" form:"txID" gorm:"column:txID;comment:;"`

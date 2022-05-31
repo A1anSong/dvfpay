@@ -2,20 +2,20 @@ package dvfpay
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
+	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type TransactionApi struct {
 }
 
 var transactionService = service.ServiceGroupApp.DvfpayServiceGroup.TransactionService
-
 
 // CreateTransaction 创建Transaction
 // @Tags Transaction
@@ -29,11 +29,16 @@ var transactionService = service.ServiceGroupApp.DvfpayServiceGroup.TransactionS
 func (transactionApi *TransactionApi) CreateTransaction(c *gin.Context) {
 	var transaction dvfpay.Transaction
 	_ = c.ShouldBindJSON(&transaction)
-	if err := transactionService.CreateTransaction(transaction); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
-		response.FailWithMessage("创建失败", c)
+	merchantID := utils.GetUserID(c)
+	if err := transactionService.CreateTransaction(transaction, merchantID); err != nil {
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		if err.Error() == "余额不足，提现失败！" {
+			response.FailWithMessage("余额不足，提现失败！", c)
+		} else {
+			response.FailWithMessage("提现失败", c)
+		}
 	} else {
-		response.OkWithMessage("创建成功", c)
+		response.OkWithMessage("提交成功", c)
 	}
 }
 
@@ -50,7 +55,7 @@ func (transactionApi *TransactionApi) DeleteTransaction(c *gin.Context) {
 	var transaction dvfpay.Transaction
 	_ = c.ShouldBindJSON(&transaction)
 	if err := transactionService.DeleteTransaction(transaction); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -68,9 +73,9 @@ func (transactionApi *TransactionApi) DeleteTransaction(c *gin.Context) {
 // @Router /transaction/deleteTransactionByIds [delete]
 func (transactionApi *TransactionApi) DeleteTransactionByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := transactionService.DeleteTransactionByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -90,7 +95,7 @@ func (transactionApi *TransactionApi) UpdateTransaction(c *gin.Context) {
 	var transaction dvfpay.Transaction
 	_ = c.ShouldBindJSON(&transaction)
 	if err := transactionService.UpdateTransaction(transaction); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -110,7 +115,7 @@ func (transactionApi *TransactionApi) FindTransaction(c *gin.Context) {
 	var transaction dvfpay.Transaction
 	_ = c.ShouldBindQuery(&transaction)
 	if err, retransaction := transactionService.GetTransaction(transaction.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"retransaction": retransaction}, c)
@@ -130,14 +135,14 @@ func (transactionApi *TransactionApi) GetTransactionList(c *gin.Context) {
 	var pageInfo dvfpayReq.TransactionSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := transactionService.GetTransactionInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }

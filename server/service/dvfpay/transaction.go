@@ -1,10 +1,12 @@
 package dvfpay
 
 import (
+	"errors"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay"
 	dvfpayReq "github.com/flipped-aurora/gin-vue-admin/server/model/dvfpay/request"
+	"gorm.io/gorm"
 )
 
 type TransactionService struct {
@@ -12,8 +14,37 @@ type TransactionService struct {
 
 // CreateTransaction 创建Transaction记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (transactionService *TransactionService) CreateTransaction(transaction dvfpay.Transaction) (err error) {
-	err = global.GVA_DB.Create(&transaction).Error
+func (transactionService *TransactionService) CreateTransaction(transaction dvfpay.Transaction, merchantID uint) (err error) {
+	err = global.GVA_DB.Transaction(func(tx *gorm.DB) error {
+		//如果是提现操作，同时检查available资金余额，并把相应available资金归为pending
+		if transaction.Operation == "WITHDRAW" {
+			//检查商户资金
+			var merchantFunds dvfpay.MerchantFunds
+			if err := tx.Model(&dvfpay.MerchantFunds{}).Where("merchant_id = ? and currency = 'USDT'", merchantID).First(&merchantFunds).Error; err != nil {
+				return err
+			}
+			if *transaction.Amount > *merchantFunds.Available {
+				return errors.New("余额不足，提现失败！")
+			}
+			*merchantFunds.Available -= *transaction.Amount
+			*merchantFunds.Unavailable += *transaction.Amount
+			if err := tx.Save(&merchantFunds).Error; err != nil {
+				return err
+			}
+		}
+		trans := dvfpay.Transaction{
+			MerchantId: &merchantID,
+			Operation:  transaction.Operation,
+			Address:    transaction.Address,
+			Amount:     transaction.Amount,
+			Status:     "REVIEWING",
+			TxID:       transaction.TxID,
+		}
+		if err := tx.Create(&trans).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 	return err
 }
 

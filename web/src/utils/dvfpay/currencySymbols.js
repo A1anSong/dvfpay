@@ -9,6 +9,6 @@ export const currencySymbols = (currency) => {
     case 'GBP':
       return '£'
     default:
-      return '￥?'
+      return currency
   }
 }

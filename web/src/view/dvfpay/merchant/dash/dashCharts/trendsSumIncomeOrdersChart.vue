@@ -28,32 +28,35 @@ const initChart = () => {
   getData()
 }
 
-const usdData = ref([])
-const eurData = ref([])
-const gbpData = ref([])
+const sumData = ref([])
+const sumSeries = ref([])
 
 const getData = async() => {
   chart.value.showLoading()
   const table = await getMerchantTrendsSumIncomeOrder()
   if (table.code === 0) {
-    table.data.usdList && table.data.usdList.forEach((sum) => {
-      usdData.value.push({
-        date: sum.date,
-        sum: sum.sum / 100,
-      })
-    })
-    table.data.eurList && table.data.eurList.forEach((sum) => {
-      eurData.value.push({
-        date: sum.date,
-        sum: sum.sum / 100,
-      })
-    })
-    table.data.gbpList && table.data.gbpList.forEach((sum) => {
-      gbpData.value.push({
-        date: sum.date,
-        sum: sum.sum / 100,
-      })
-    })
+    if (table.data.list !== undefined) {
+      let index = 0
+      for (const key in table.data.list) {
+        const data = []
+        table.data.list[key].forEach((sum) => {
+          data.push({
+            date: sum.date,
+            sum: sum.sum / 100,
+          })
+        })
+        sumData.value.push({
+          source: data,
+        })
+        sumSeries.value.push({
+          name: key,
+          datasetIndex: index,
+          type: 'line',
+          smooth: true,
+        })
+        index++
+      }
+    }
     chart.value.setOption({
       grid: {
         left: '50',
@@ -66,13 +69,7 @@ const getData = async() => {
         trigger: 'axis',
         axisPointer: { type: 'cross' },
       },
-      dataset: [{
-        source: usdData.value,
-      }, {
-        source: eurData.value,
-      }, {
-        source: gbpData.value,
-      }],
+      dataset: sumData.value,
       xAxis: {
         type: 'time',
         axisTick: {
@@ -89,22 +86,7 @@ const getData = async() => {
         },
       },
       yAxis: {},
-      series: [{
-        name: 'USD',
-        datasetIndex: 0,
-        type: 'line',
-        smooth: true,
-      }, {
-        name: 'EUR',
-        datasetIndex: 1,
-        type: 'line',
-        smooth: true,
-      }, {
-        name: 'GBP',
-        datasetIndex: 2,
-        type: 'line',
-        smooth: true,
-      }],
+      series: sumSeries.value,
     })
     chart.value.hideLoading()
   }

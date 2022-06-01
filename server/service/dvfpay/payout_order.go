@@ -126,10 +126,11 @@ func (payoutOrderService *PayoutOrderService) GetStatisticsPayoutOrder() (err er
 	return err, statisticians
 }
 
-func (payoutOrderService *PayoutOrderService) GetTrendsCountPayoutOrder() (err error, usdList interface{}, eurList interface{}, gbpList interface{}) {
+func (payoutOrderService *PayoutOrderService) GetTrendsCountPayoutOrder() (err error, list interface{}) {
 	type CountPayoutOrder struct {
-		Count int    `json:"count"`
-		Date  string `json:"date"`
+		Count    int    `json:"count"`
+		Date     string `json:"date"`
+		Currency string `json:"currency"`
 	}
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
@@ -138,22 +139,24 @@ func (payoutOrderService *PayoutOrderService) GetTrendsCountPayoutOrder() (err e
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}
-	var usdResults []CountPayoutOrder
-	var eurResults []CountPayoutOrder
-	var gbpResults []CountPayoutOrder
-	usdDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{})
-	err = usdDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "USD").Group("date(arrival_time)").Find(&usdResults).Error
-	eurDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{})
-	err = eurDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "EUR").Group("date(arrival_time)").Find(&eurResults).Error
-	gbpDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{})
-	err = gbpDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "GBP").Group("date(arrival_time)").Find(&gbpResults).Error
-	return err, usdResults, eurResults, gbpResults
+	var countPayoutOrders []CountPayoutOrder
+	err = global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Select("count(*) as count, date(arrival_time) as date, currency").Where("date(arrival_time) in ?", dateList).Group("date(arrival_time)").Find(&countPayoutOrders).Error
+	countList := make(map[string][]CountPayoutOrder)
+	for _, countPayoutOrder := range countPayoutOrders {
+		if _, ok := countList[countPayoutOrder.Currency]; ok {
+			countList[countPayoutOrder.Currency] = append(countList[countPayoutOrder.Currency], countPayoutOrder)
+		} else {
+			countList[countPayoutOrder.Currency] = []CountPayoutOrder{countPayoutOrder}
+		}
+	}
+	return err, countList
 }
 
-func (payoutOrderService *PayoutOrderService) GetTrendsSumPayoutOrder() (err error, usdList interface{}, eurList interface{}, gbpList interface{}) {
+func (payoutOrderService *PayoutOrderService) GetTrendsSumPayoutOrder() (err error, list interface{}) {
 	type SumPayoutOrder struct {
-		Sum  int    `json:"sum"`
-		Date string `json:"date"`
+		Sum      int    `json:"sum"`
+		Date     string `json:"date"`
+		Currency string `json:"currency"`
 	}
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
@@ -162,16 +165,17 @@ func (payoutOrderService *PayoutOrderService) GetTrendsSumPayoutOrder() (err err
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}
-	var usdResults []SumPayoutOrder
-	var eurResults []SumPayoutOrder
-	var gbpResults []SumPayoutOrder
-	usdDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{})
-	err = usdDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "USD").Group("date(arrival_time)").Find(&usdResults).Error
-	eurDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{})
-	err = eurDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "EUR").Group("date(arrival_time)").Find(&eurResults).Error
-	gbpDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{})
-	err = gbpDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "GBP").Group("date(arrival_time)").Find(&gbpResults).Error
-	return err, usdResults, eurResults, gbpResults
+	var sumPayoutOrders []SumPayoutOrder
+	err = global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Select("sum(amount) as sum, date(arrival_time) as date, currency").Where("date(arrival_time) in ?", dateList).Group("date(arrival_time)").Find(&sumPayoutOrders).Error
+	sumList := make(map[string][]SumPayoutOrder)
+	for _, sumPayoutOrder := range sumPayoutOrders {
+		if _, ok := sumList[sumPayoutOrder.Currency]; ok {
+			sumList[sumPayoutOrder.Currency] = append(sumList[sumPayoutOrder.Currency], sumPayoutOrder)
+		} else {
+			sumList[sumPayoutOrder.Currency] = []SumPayoutOrder{sumPayoutOrder}
+		}
+	}
+	return err, sumList
 }
 
 func (payoutOrderService *PayoutOrderService) GetMerchantStatisticsPayoutOrder(merchantID uint) (err error, list interface{}) {
@@ -196,10 +200,11 @@ func (payoutOrderService *PayoutOrderService) GetMerchantStatisticsPayoutOrder(m
 	return err, statisticians
 }
 
-func (payoutOrderService *PayoutOrderService) GetMerchantTrendsCountPayoutOrder(merchantID uint) (err error, usdList interface{}, eurList interface{}, gbpList interface{}) {
+func (payoutOrderService *PayoutOrderService) GetMerchantTrendsCountPayoutOrder(merchantID uint) (err error, list interface{}) {
 	type CountPayoutOrder struct {
-		Count int    `json:"count"`
-		Date  string `json:"date"`
+		Count    int    `json:"count"`
+		Date     string `json:"date"`
+		Currency string `json:"currency"`
 	}
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
@@ -208,22 +213,24 @@ func (payoutOrderService *PayoutOrderService) GetMerchantTrendsCountPayoutOrder(
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}
-	var usdResults []CountPayoutOrder
-	var eurResults []CountPayoutOrder
-	var gbpResults []CountPayoutOrder
-	usdDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID)
-	err = usdDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "USD").Group("date(arrival_time)").Find(&usdResults).Error
-	eurDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID)
-	err = eurDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "EUR").Group("date(arrival_time)").Find(&eurResults).Error
-	gbpDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID)
-	err = gbpDb.Select("count(*) as count, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "GBP").Group("date(arrival_time)").Find(&gbpResults).Error
-	return err, usdResults, eurResults, gbpResults
+	var countPayoutOrders []CountPayoutOrder
+	err = global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID).Select("count(*) as count, date(arrival_time) as date, currency").Where("date(arrival_time) in ?", dateList).Group("date(arrival_time)").Find(&countPayoutOrders).Error
+	countList := make(map[string][]CountPayoutOrder)
+	for _, countPayoutOrder := range countPayoutOrders {
+		if _, ok := countList[countPayoutOrder.Currency]; ok {
+			countList[countPayoutOrder.Currency] = append(countList[countPayoutOrder.Currency], countPayoutOrder)
+		} else {
+			countList[countPayoutOrder.Currency] = []CountPayoutOrder{countPayoutOrder}
+		}
+	}
+	return err, countList
 }
 
-func (payoutOrderService *PayoutOrderService) GetMerchantTrendsSumPayoutOrder(merchantID uint) (err error, usdList interface{}, eurList interface{}, gbpList interface{}) {
+func (payoutOrderService *PayoutOrderService) GetMerchantTrendsSumPayoutOrder(merchantID uint) (err error, list interface{}) {
 	type SumPayoutOrder struct {
-		Sum  int    `json:"sum"`
-		Date string `json:"date"`
+		Sum      int    `json:"sum"`
+		Date     string `json:"date"`
+		Currency string `json:"currency"`
 	}
 	endTime := time.Now().Unix()
 	loopTime := endTime - 86400*30
@@ -232,14 +239,15 @@ func (payoutOrderService *PayoutOrderService) GetMerchantTrendsSumPayoutOrder(me
 		dateList = append(dateList, time.Unix(loopTime, 0).Format("2006-01-02"))
 		loopTime += 86400
 	}
-	var usdResults []SumPayoutOrder
-	var eurResults []SumPayoutOrder
-	var gbpResults []SumPayoutOrder
-	usdDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID)
-	err = usdDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "USD").Group("date(arrival_time)").Find(&usdResults).Error
-	eurDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID)
-	err = eurDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "EUR").Group("date(arrival_time)").Find(&eurResults).Error
-	gbpDb := global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID)
-	err = gbpDb.Select("sum(amount) as sum, date(arrival_time) as date").Where("date(arrival_time) in ?", dateList).Where("currency = ?", "GBP").Group("date(arrival_time)").Find(&gbpResults).Error
-	return err, usdResults, eurResults, gbpResults
+	var sumPayoutOrders []SumPayoutOrder
+	err = global.GVA_DB.Model(&dvfpay.PayoutOrder{}).Where("merchant_id = ?", merchantID).Select("sum(amount) as sum, date(arrival_time) as date, currency").Where("date(arrival_time) in ?", dateList).Group("date(arrival_time)").Find(&sumPayoutOrders).Error
+	sumList := make(map[string][]SumPayoutOrder)
+	for _, sumPayoutOrder := range sumPayoutOrders {
+		if _, ok := sumList[sumPayoutOrder.Currency]; ok {
+			sumList[sumPayoutOrder.Currency] = append(sumList[sumPayoutOrder.Currency], sumPayoutOrder)
+		} else {
+			sumList[sumPayoutOrder.Currency] = []SumPayoutOrder{sumPayoutOrder}
+		}
+	}
+	return err, sumList
 }

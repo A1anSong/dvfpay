@@ -176,14 +176,12 @@ func (payoutOrderApi *PayoutOrderApi) GetTrendsCountPayoutOrder(c *gin.Context) 
 		EurList interface{} `json:"eurList"`
 		GbpList interface{} `json:"gbpList"`
 	}
-	if err, usdList, eurList, gbpList := payoutOrderService.GetTrendsCountPayoutOrder(); err != nil {
+	if err, list := payoutOrderService.GetTrendsCountPayoutOrder(); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
-		response.OkWithDetailed(Result{
-			UsdList: usdList,
-			EurList: eurList,
-			GbpList: gbpList,
+		response.OkWithDetailed(response.PageResult{
+			List: list,
 		}, "获取成功", c)
 	}
 }
@@ -194,14 +192,12 @@ func (payoutOrderApi *PayoutOrderApi) GetTrendsSumPayoutOrder(c *gin.Context) {
 		EurList interface{} `json:"eurList"`
 		GbpList interface{} `json:"gbpList"`
 	}
-	if err, usdList, eurList, gbpList := payoutOrderService.GetTrendsSumPayoutOrder(); err != nil {
+	if err, list := payoutOrderService.GetTrendsSumPayoutOrder(); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
-		response.OkWithDetailed(Result{
-			UsdList: usdList,
-			EurList: eurList,
-			GbpList: gbpList,
+		response.OkWithDetailed(response.PageResult{
+			List: list,
 		}, "获取成功", c)
 	}
 }
@@ -225,14 +221,12 @@ func (payoutOrderApi *PayoutOrderApi) GetMerchantTrendsCountPayoutOrder(c *gin.C
 		GbpList interface{} `json:"gbpList"`
 	}
 	merchantID := utils.GetUserID(c)
-	if err, usdList, eurList, gbpList := payoutOrderService.GetMerchantTrendsCountPayoutOrder(merchantID); err != nil {
+	if err, list := payoutOrderService.GetMerchantTrendsCountPayoutOrder(merchantID); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
-		response.OkWithDetailed(Result{
-			UsdList: usdList,
-			EurList: eurList,
-			GbpList: gbpList,
+		response.OkWithDetailed(response.PageResult{
+			List: list,
 		}, "获取成功", c)
 	}
 }
@@ -244,14 +238,12 @@ func (payoutOrderApi *PayoutOrderApi) GetMerchantTrendsSumPayoutOrder(c *gin.Con
 		GbpList interface{} `json:"gbpList"`
 	}
 	merchantID := utils.GetUserID(c)
-	if err, usdList, eurList, gbpList := payoutOrderService.GetMerchantTrendsSumPayoutOrder(merchantID); err != nil {
+	if err, list := payoutOrderService.GetMerchantTrendsSumPayoutOrder(merchantID); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
-		response.OkWithDetailed(Result{
-			UsdList: usdList,
-			EurList: eurList,
-			GbpList: gbpList,
+		response.OkWithDetailed(response.PageResult{
+			List: list,
 		}, "获取成功", c)
 	}
 }

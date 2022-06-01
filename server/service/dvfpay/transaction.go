@@ -50,8 +50,35 @@ func (transactionService *TransactionService) CreateTransaction(transaction dvfp
 
 // DeleteTransaction 删除Transaction记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (transactionService *TransactionService) DeleteTransaction(transaction dvfpay.Transaction) (err error) {
-	err = global.GVA_DB.Delete(&transaction).Error
+func (transactionService *TransactionService) DeleteTransaction(transaction dvfpay.Transaction, adminID uint) (err error) {
+	//变更为拒绝放行，恢复相应资金表，并添加相应的Record记录
+	err = global.GVA_DB.Transaction(func(tx *gorm.DB) error {
+		if err = tx.Model(&dvfpay.Transaction{}).Where("id = ?", transaction.ID).First(&transaction).Error; err != nil {
+			return err
+		}
+		transaction.Status = "REJECTED"
+		if err = tx.Save(&transaction).Error; err != nil {
+			return err
+		}
+		var merchantFundsUSDT dvfpay.MerchantFunds
+		if err := tx.Model(&dvfpay.MerchantFunds{}).Where("merchant_id = ? and currency = 'USDT'", *transaction.MerchantId).First(&merchantFundsUSDT).Error; err != nil {
+			return err
+		}
+		*merchantFundsUSDT.Available += *transaction.Amount
+		*merchantFundsUSDT.Unavailable -= *transaction.Amount
+		if err = tx.Save(&merchantFundsUSDT).Error; err != nil {
+			return err
+		}
+		transactionRecord := dvfpay.TransactionRecord{
+			TransactionId: &transaction.ID,
+			AdminId:       &adminID,
+			Operation:     "REJECTED",
+		}
+		if err = tx.Save(&transactionRecord).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 	return err
 }
 
@@ -64,8 +91,31 @@ func (transactionService *TransactionService) DeleteTransactionByIds(ids request
 
 // UpdateTransaction 更新Transaction记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (transactionService *TransactionService) UpdateTransaction(transaction dvfpay.Transaction) (err error) {
-	err = global.GVA_DB.Save(&transaction).Error
+func (transactionService *TransactionService) UpdateTransaction(transaction dvfpay.Transaction, adminID uint) (err error) {
+	//变更为放行，操作相应资金表，并添加相应的Record记录
+	err = global.GVA_DB.Transaction(func(tx *gorm.DB) error {
+		transaction.Status = "RELEASED"
+		if err = tx.Save(&transaction).Error; err != nil {
+			return err
+		}
+		var merchantFundsUSDT dvfpay.MerchantFunds
+		if err := tx.Model(&dvfpay.MerchantFunds{}).Where("merchant_id = ? and currency = 'USDT'", *transaction.MerchantId).First(&merchantFundsUSDT).Error; err != nil {
+			return err
+		}
+		*merchantFundsUSDT.Unavailable -= *transaction.Amount
+		if err = tx.Save(&merchantFundsUSDT).Error; err != nil {
+			return err
+		}
+		transactionRecord := dvfpay.TransactionRecord{
+			TransactionId: &transaction.ID,
+			AdminId:       &adminID,
+			Operation:     "RELEASED",
+		}
+		if err = tx.Save(&transactionRecord).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 	return err
 }
 
@@ -98,6 +148,30 @@ func (transactionService *TransactionService) GetTransactionInfoList(info dvfpay
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&transactions).Error
+	err = db.Limit(limit).Offset(offset).Preload("Merchant").Order("created_at desc").Find(&transactions).Error
+	return err, transactions, total
+}
+
+func (transactionService *TransactionService) GetMerchantTransactionInfoList(info dvfpayReq.TransactionSearch, merchantID uint) (err error, list interface{}, total int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	// 创建db
+	db := global.GVA_DB.Model(&dvfpay.Transaction{}).Where("merchant_id = ?", merchantID)
+	var transactions []dvfpay.Transaction
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.MerchantId != nil {
+		db = db.Where("merchant_id = ?", info.MerchantId)
+	}
+	if info.Operation != "" {
+		db = db.Where("type = ?", info.Operation)
+	}
+	if info.Status != "" {
+		db = db.Where("status = ?", info.Status)
+	}
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Order("created_at desc").Find(&transactions).Error
 	return err, transactions, total
 }

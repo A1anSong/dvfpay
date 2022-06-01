@@ -143,7 +143,7 @@ import {
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
-import { currencySymbols } from '@/utils/dvfpay/currencySymbols'
+import { currencySymbols } from '@/utils/dvfpay/currency'
 // import { ElMessage, ElMessageBox } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { ref } from 'vue'

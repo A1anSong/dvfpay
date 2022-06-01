@@ -86,7 +86,6 @@
             <el-tag
               :type="statusType(scope.row.status)"
               effect="dark"
-              round
             >
               {{ statusDisplay(scope.row.status) }}
             </el-tag>
@@ -175,8 +174,8 @@ import {
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
-import { currencySymbols } from '@/utils/dvfpay/currencySymbols'
-import { statusDisplay, statusType } from '@/utils/dvfpay/statusDisplay'
+import { currencySymbols } from '@/utils/dvfpay/currency'
+import { statusDisplay, statusType } from '@/utils/dvfpay/order'
 // import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 

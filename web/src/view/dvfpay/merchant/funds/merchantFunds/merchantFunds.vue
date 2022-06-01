@@ -90,7 +90,7 @@ import {
 } from '@/api/dvfpay/merchantFunds'
 
 // 全量引入格式化工具 请按需保留
-import { currencySymbols } from '@/utils/dvfpay/currencySymbols'
+import { currencySymbols } from '@/utils/dvfpay/currency'
 import { ref } from 'vue'
 import { createExchangeRecord } from '@/api/dvfpay/exchangeRecord'
 import { createTransaction } from '@/api/dvfpay/transaction'

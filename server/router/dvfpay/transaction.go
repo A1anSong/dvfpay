@@ -15,13 +15,14 @@ func (s *TransactionRouter) InitTransactionRouter(Router *gin.RouterGroup) {
 	transactionRouterWithoutRecord := Router.Group("transaction")
 	var transactionApi = v1.ApiGroupApp.DvfpayApiGroup.TransactionApi
 	{
-		transactionRouter.POST("createTransaction", transactionApi.CreateTransaction)   // 新建Transaction
-		transactionRouter.DELETE("deleteTransaction", transactionApi.DeleteTransaction) // 删除Transaction
+		transactionRouter.POST("createTransaction", transactionApi.CreateTransaction)             // 新建Transaction
+		transactionRouter.DELETE("deleteTransaction", transactionApi.DeleteTransaction)           // 删除Transaction
 		transactionRouter.DELETE("deleteTransactionByIds", transactionApi.DeleteTransactionByIds) // 批量删除Transaction
-		transactionRouter.PUT("updateTransaction", transactionApi.UpdateTransaction)    // 更新Transaction
+		transactionRouter.PUT("updateTransaction", transactionApi.UpdateTransaction)              // 更新Transaction
 	}
 	{
-		transactionRouterWithoutRecord.GET("findTransaction", transactionApi.FindTransaction)        // 根据ID获取Transaction
-		transactionRouterWithoutRecord.GET("getTransactionList", transactionApi.GetTransactionList)  // 获取Transaction列表
+		transactionRouterWithoutRecord.GET("findTransaction", transactionApi.FindTransaction)       // 根据ID获取Transaction
+		transactionRouterWithoutRecord.GET("getTransactionList", transactionApi.GetTransactionList) // 获取Transaction列表
+		transactionRouterWithoutRecord.GET("getMerchantTransactionList", transactionApi.GetMerchantTransactionList)
 	}
 }

@@ -53,10 +53,34 @@
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="操作" prop="operation" min-width="120" />
-        <el-table-column align="left" label="金额" prop="amount" min-width="120" />
-        <el-table-column align="left" label="状态" prop="status" min-width="120" />
-        <el-table-column align="left" label="TxID" prop="txID" min-width="120" />
+        <el-table-column align="left" label="操作" prop="operation" min-width="120">
+          <template #default="scope">{{ transactionOperation(scope.row.operation) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="金额" min-width="120">
+          <template #default="scope">{{ '₮' + (scope.row.amount / 100).toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="地址" prop="address" min-width="120" />
+        <el-table-column align="left" label="状态" min-width="120">
+          <template #default="scope">
+            <el-tag
+              :type="statusType(scope.row.status)"
+              effect="dark"
+            >
+              {{ transactionStatus(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="TxID" min-width="120">
+          <template #default="scope">
+            <el-link
+              v-if="scope.row.txID"
+              type="primary"
+              target="_blank"
+              :href="'https://tronscan.org/#/transaction/' + scope.row.txID"
+            >{{ scope.row.txID }}
+            </el-link>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="gva-pagination">
         <el-pagination
@@ -111,11 +135,12 @@ import {
   // deleteTransactionByIds,
   updateTransaction,
   // findTransaction,
-  getTransactionList,
+  getMerchantTransactionList,
 } from '@/api/dvfpay/transaction'
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
+import { transactionOperation, transactionStatus, statusType } from '@/utils/dvfpay/transaction'
 import { ElMessage /* ElMessageBox */ } from 'element-plus'
 import { ref } from 'vue'
 
@@ -161,7 +186,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getTransactionList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getMerchantTransactionList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total

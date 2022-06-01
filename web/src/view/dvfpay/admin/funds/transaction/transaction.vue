@@ -53,22 +53,50 @@
         <el-table-column align="left" label="日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="商户" prop="merchantId" min-width="120" />
-        <el-table-column align="left" label="操作" prop="operation" min-width="120" />
-        <el-table-column align="left" label="金额" prop="amount" min-width="120" />
-        <el-table-column align="left" label="状态" prop="status" min-width="120" />
-        <el-table-column align="left" label="TxID" prop="txID" min-width="120" />
+        <el-table-column align="left" label="商户" min-width="120">
+          <template #default="scope">{{ scope.row.merchant.nickName }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="操作" min-width="120">
+          <template #default="scope">{{ transactionOperation(scope.row.operation) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="地址" prop="address" min-width="120" />
+        <el-table-column align="left" label="金额" min-width="120">
+          <template #default="scope">{{ '₮' + (scope.row.amount / 100).toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="状态" min-width="120">
+          <template #default="scope">
+            <el-tag
+              :type="statusType(scope.row.status)"
+              effect="dark"
+            >
+              {{ transactionStatus(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="TxID" min-width="120">
+          <template #default="scope">
+            <el-link
+              v-if="scope.row.txID"
+              type="primary"
+              target="_blank"
+              :href="'https://tronscan.org/#/transaction/' + scope.row.txID"
+            >{{ scope.row.txID }}
+            </el-link>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
-            <el-button
-              type="text"
-              icon="edit"
-              size="small"
-              class="table-button"
-              @click="updateTransactionFunc(scope.row)"
-            >变更
-            </el-button>
-            <el-button type="text" icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
+            <div v-if="scope.row.status === 'REVIEWING'">
+              <el-button
+                type="text"
+                icon="check"
+                size="small"
+                class="table-button"
+                @click="updateTransactionFunc(scope.row)"
+              >放行
+              </el-button>
+              <el-button type="text" icon="close" size="small" @click="deleteRow(scope.row)">拒绝</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -86,20 +114,11 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" label-width="80px">
-        <el-form-item label="商户id:">
-          <el-input v-model.number="formData.merchantId" clearable placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="类型:">
-          <el-input v-model="formData.type" clearable placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="币种:">
-          <el-input v-model="formData.currency" clearable placeholder="请输入" />
-        </el-form-item>
         <el-form-item label="金额:">
           <el-input v-model.number="formData.amount" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="状态:">
-          <el-input v-model="formData.status" clearable placeholder="请输入" />
+        <el-form-item label="TxID:">
+          <el-input v-model="formData.txID" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -130,16 +149,18 @@ import {
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
+import { transactionOperation, transactionStatus, statusType } from '@/utils/dvfpay/transaction'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
   merchantId: 0,
-  type: '',
-  currency: '',
+  operation: '',
+  address: '',
   amount: 0,
   status: '',
+  txID: '',
 })
 
 // =========== 表格控制部分 ===========
@@ -204,7 +225,7 @@ const handleSelectionChange = (val) => {
 
 // 删除行
 const deleteRow = (row) => {
-  ElMessageBox.confirm('确定要删除吗?', '提示', {
+  ElMessageBox.confirm('确定要拒绝放行吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
@@ -286,10 +307,11 @@ const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
     merchantId: 0,
-    type: '',
-    currency: '',
+    operation: '',
+    address: '',
     amount: 0,
     status: '',
+    txID: '',
   }
 }
 // 弹窗确定

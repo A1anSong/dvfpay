@@ -61,6 +61,6 @@ func (transactionRecordService *TransactionRecordService) GetTransactionRecordIn
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&transactionRecords).Error
+	err = db.Limit(limit).Offset(offset).Preload("Transaction").Preload("Transaction.Merchant").Preload("Admin").Find(&transactionRecords).Error
 	return err, transactionRecords, total
 }

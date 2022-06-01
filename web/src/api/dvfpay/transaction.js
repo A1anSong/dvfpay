@@ -95,3 +95,11 @@ export const getTransactionList = (params) => {
     params
   })
 }
+
+export const getMerchantTransactionList = (params) => {
+  return service({
+    url: '/transaction/getMerchantTransactionList',
+    method: 'get',
+    params
+  })
+}

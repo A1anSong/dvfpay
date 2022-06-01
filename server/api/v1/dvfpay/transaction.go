@@ -54,7 +54,8 @@ func (transactionApi *TransactionApi) CreateTransaction(c *gin.Context) {
 func (transactionApi *TransactionApi) DeleteTransaction(c *gin.Context) {
 	var transaction dvfpay.Transaction
 	_ = c.ShouldBindJSON(&transaction)
-	if err := transactionService.DeleteTransaction(transaction); err != nil {
+	adminID := utils.GetUserID(c)
+	if err := transactionService.DeleteTransaction(transaction, adminID); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -94,7 +95,8 @@ func (transactionApi *TransactionApi) DeleteTransactionByIds(c *gin.Context) {
 func (transactionApi *TransactionApi) UpdateTransaction(c *gin.Context) {
 	var transaction dvfpay.Transaction
 	_ = c.ShouldBindJSON(&transaction)
-	if err := transactionService.UpdateTransaction(transaction); err != nil {
+	adminID := utils.GetUserID(c)
+	if err := transactionService.UpdateTransaction(transaction, adminID); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -135,6 +137,23 @@ func (transactionApi *TransactionApi) GetTransactionList(c *gin.Context) {
 	var pageInfo dvfpayReq.TransactionSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := transactionService.GetTransactionInfoList(pageInfo); err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+func (transactionApi *TransactionApi) GetMerchantTransactionList(c *gin.Context) {
+	var pageInfo dvfpayReq.TransactionSearch
+	_ = c.ShouldBindQuery(&pageInfo)
+	merchantID := utils.GetUserID(c)
+	if err, list, total := transactionService.GetMerchantTransactionInfoList(pageInfo, merchantID); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

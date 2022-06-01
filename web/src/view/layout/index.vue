@@ -90,11 +90,13 @@
           element-loading-text="正在加载中"
           class="admin-box"
         >
-          <transition mode="out-in" name="el-fade-in-linear">
-            <keep-alive :include="routerStore.keepAliveRouters">
-              <component :is="Component" />
-            </keep-alive>
-          </transition>
+          <div>
+            <transition mode="out-in" name="el-fade-in-linear">
+              <keep-alive :include="routerStore.keepAliveRouters">
+                <component :is="Component" />
+              </keep-alive>
+            </transition>
+          </div>
         </router-view>
         <BottomInfo />
         <setting />

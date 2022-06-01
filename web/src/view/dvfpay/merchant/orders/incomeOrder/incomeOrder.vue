@@ -84,7 +84,15 @@
         </el-table-column>
         <el-table-column align="left" label="币种" prop="currency" min-width="120" />
         <el-table-column align="left" label="状态" min-width="120">
-          <template #default="scope">{{ statusDisplay(scope.row.status) }}</template>
+          <template #default="scope">
+            <el-tag
+              :type="statusType(scope.row.status)"
+              effect="dark"
+              round
+            >
+              {{ statusDisplay(scope.row.status) }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column align="left" label="付款人" prop="payer" min-width="120" />
         <el-table-column align="left" label="备注" prop="remark" min-width="120" />
@@ -198,7 +206,7 @@ import {
 // 全量引入格式化工具 请按需保留
 import { formatDate } from '@/utils/format'
 import { currencySymbols } from '@/utils/dvfpay/currencySymbols'
-import { statusDisplay } from '@/utils/dvfpay/statusDisplay'
+import { statusDisplay, statusType } from '@/utils/dvfpay/statusDisplay'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
 

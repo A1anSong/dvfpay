@@ -10,3 +10,16 @@ export const statusDisplay = (status) => {
       return status
   }
 }
+
+export const statusType = (status) => {
+  switch (status) {
+    case 'success':
+      return 'success'
+    case 'PENDING':
+      return 'warning'
+    case 'SETTLED':
+      return ''
+    default:
+      return status
+  }
+}

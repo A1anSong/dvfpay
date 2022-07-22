@@ -23,7 +23,7 @@ type PayoutOrder struct {
 	PayoutGatewayAuthId *uint             `json:"payoutGatewayAuthId" form:"payoutGatewayAuthId" gorm:"column:payout_gateway_auth_id;comment:;"`
 	PayoutGatewayAuth   PayoutGatewayAuth `json:"payoutGatewayAuth" form:"payoutGatewayAuth"`
 	NotifyURL           string            `json:"-" form:"notifyURL" gorm:"column:notify_url;comment:;"`
-	NotifyStatus        int               `json:"-" form:"notifyStatus" gorm:"column:notify_status;comment:;"`
+	NotifyStatus        string            `json:"-" form:"notifyStatus" gorm:"column:notify_status;comment:;"`
 	MetaData            string            `json:"metaData" form:"metaData" gorm:"column:meta_data;type:text;comment:;"`
 	MerchantOrderId     string            `json:"merchantOrderId" form:"merchantOrderId" gorm:"column:merchant_order_id;comment:;"`
 }

@@ -24,7 +24,7 @@ type IncomeOrder struct {
 	IncomeGatewayAuth   IncomeGatewayAuth `json:"incomeGatewayAuth" form:"incomeGatewayAuth"`
 	Confirmed           bool              `json:"confirmed" form:"confirmed" gorm:"column:confirmed;comment:;"`
 	NotifyURL           string            `json:"-" form:"notifyURL" gorm:"column:notify_url;comment:;"`
-	NotifyStatus        int               `json:"-" form:"notifyStatus" gorm:"column:notify_status;comment:;"`
+	NotifyStatus        string            `json:"-" form:"notifyStatus" gorm:"column:notify_status;comment:;"`
 	MetaData            string            `json:"metaData" form:"metaData" gorm:"column:meta_data;type:text;comment:;"`
 	MerchantOrderId     string            `json:"merchantOrderId" form:"merchantOrderId" gorm:"column:merchant_order_id;comment:;"`
 }

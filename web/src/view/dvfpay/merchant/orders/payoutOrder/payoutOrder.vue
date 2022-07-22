@@ -76,7 +76,7 @@
         <el-table-column align="left" label="订单id" prop="orderId" min-width="120" />
         <el-table-column align="left" label="金额" min-width="120">
           <template #default="scope">{{
-            (currencySymbols(scope.row.currency) + scope.row.amount / 100).toFixed(2)
+            currencySymbols(scope.row.currency) + (scope.row.amount / 100).toFixed(2)
           }}
           </template>
         </el-table-column>

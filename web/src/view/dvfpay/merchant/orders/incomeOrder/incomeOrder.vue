@@ -124,6 +124,9 @@
         :content="metaDataContent"
         placement="top"
       />
+      <div style="display: flex; justify-content: left">
+        统计合计：{{ (sum / 100).toFixed(2) }}
+      </div>
       <div class="gva-pagination">
         <el-pagination
           layout="total, sizes, prev, pager, next, jumper"
@@ -228,6 +231,8 @@ const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
 
+const sum = ref(0)
+
 // 重置
 const onReset = () => {
   searchInfo.value = {}
@@ -260,6 +265,10 @@ const getTableData = async() => {
     total.value = table.data.total
     page.value = table.data.page
     pageSize.value = table.data.pageSize
+    sum.value = 0
+    table.data.list.forEach((row) => {
+      sum.value += row.amount
+    })
   }
 }
 

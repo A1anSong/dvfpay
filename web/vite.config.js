@@ -26,13 +26,13 @@ export default ({
 
   const timestamp = Date.parse(new Date())
 
-  const rollupOptions = {
-    output: {
-      entryFileNames: `gva/gin-vue-admin-[name].${timestamp}.js`,
-      chunkFileNames: `js/gin-vue-admin-[name].${timestamp}.js`,
-      assetFileNames: `assets/gin-vue-admin-[name].${timestamp}.[ext]`,
-    },
-  }
+  // const rollupOptions = {
+  //   output: {
+  //     entryFileNames: `gva/gin-vue-admin-[name].${timestamp}.js`,
+  //     chunkFileNames: `js/gin-vue-admin-[name].${timestamp}.js`,
+  //     assetFileNames: `assets/gin-vue-admin-[name].${timestamp}.[ext]`,
+  //   },
+  // }
 
   const optimizeDeps = {}
 
@@ -44,7 +44,7 @@ export default ({
   const esbuild = {}
 
   return {
-    base: './', // index.html文件所在位置
+    base: '/', // index.html文件所在位置
     root: './', // js导入的资源路径，src
     resolve: {
       alias,
@@ -54,7 +54,7 @@ export default ({
     },
     server: {
       // 如果使用docker-compose开发模式，设置为false
-      open: false,
+      open: true,
       port: process.env.VITE_CLI_PORT,
       proxy: {
         // 把key的路径代理到target位置
@@ -67,12 +67,12 @@ export default ({
       },
     },
     build: {
-      target: 'es2015',
+      target: 'es2017',
       minify: 'terser', // 是否进行压缩,boolean | 'terser' | 'esbuild',默认使用terser
       manifest: false, // 是否产出maifest.json
       sourcemap: false, // 是否产出soucemap.json
       outDir: 'dist', // 产出目录
-      rollupOptions,
+      // rollupOptions,
     },
     esbuild,
     optimizeDeps,

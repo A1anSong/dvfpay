@@ -1,5 +1,8 @@
 # qm-plus-vue-page
 
+## 开发时node版本（兼容性最高建议）：v16.14.2
+不同版本可能会引起npm install的报错
+
 ## Project setup
 ```
 npm install
